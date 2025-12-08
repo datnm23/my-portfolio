@@ -1,11 +1,13 @@
-import { ArrowLeft, Download } from "lucide-react";
+import { ArrowLeft, Download, Moon, Sun } from "lucide-react";
 import { OWNER_NAME, OWNER_EMAIL, OWNER_PHONE, OWNER_LOCATION, SKILLS, EXPERIENCES, CV_FILE_PATH, SOFTWARE_SKILLS } from "@/const";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { Link } from "wouter";
 
 export default function About() {
   const { language } = useLanguage();
+  const { theme, toggleTheme, switchable } = useTheme();
 
   const translations = {
     vi: {
@@ -67,17 +69,21 @@ export default function About() {
     { name: language === "vi" ? "G8" : "G8", rating: 4 },
   ];
 
-  const renderStars = (rating: number) => {
+  const renderRatingBars = (rating: number) => {
     return (
-      <div className="flex gap-1">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div
-            key={i}
-            className={`w-2 h-2 rounded-full ${
-              i < rating ? "bg-accent" : "bg-border"
-            }`}
-          />
-        ))}
+      <div className="flex items-center gap-3">
+        <div className="flex gap-1.5 flex-1">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={i}
+              className={`h-2 flex-1 rounded-sm ${i < rating ? "bg-accent" : "bg-border"
+                }`}
+            />
+          ))}
+        </div>
+        <span className="text-sm font-semibold text-muted-foreground min-w-[2.5rem] text-right">
+          {rating}/5
+        </span>
       </div>
     );
   };
@@ -85,25 +91,41 @@ export default function About() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-background border-b border-border">
+      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/50">
         <div className="container py-4 flex items-center justify-between">
           <Link href="/">
-            <a className="text-2xl font-bold text-accent hover:opacity-80 transition-smooth">
+            <a className="text-xl font-bold text-foreground hover:text-accent transition-smooth">
               Nguyễn Mạnh Đạt
             </a>
           </Link>
-          <div className="flex items-center gap-8">
-            <div className="hidden md:flex gap-8">
+          <div className="flex items-center gap-6">
+            <div className="hidden md:flex gap-6">
+              <Link href="/">
+                <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
+                  {language === "vi" ? "Trang chủ" : "Home"}
+                </a>
+              </Link>
               <Link href="/about">
-                <a className="text-foreground hover:text-accent transition-smooth font-semibold text-accent">{content.about}</a>
+                <a className="text-sm font-medium text-accent hover:text-accent/80 transition-smooth">{content.about}</a>
               </Link>
               <Link href="/portfolio">
-                <a className="text-foreground hover:text-accent transition-smooth">{content.portfolio}</a>
+                <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
+                  {language === "vi" ? "Kinh nghiệm" : "Experiences"}
+                </a>
               </Link>
               <Link href="/contact">
-                <a className="text-foreground hover:text-accent transition-smooth">{content.contact}</a>
+                <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{content.contact}</a>
               </Link>
             </div>
+            {switchable && toggleTheme && (
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-full hover:bg-secondary transition-smooth"
+                aria-label="Toggle theme"
+              >
+                {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+              </button>
+            )}
             <LanguageSwitcher />
           </div>
         </div>
@@ -166,16 +188,14 @@ export default function About() {
             </div>
           </section>
 
-          {/* Skills Section with Ratings */}
+          {/* Skills Section with Rating Bars */}
           <section className="mb-16">
             <h2 className="text-3xl font-bold text-foreground mb-8">{content.skills}</h2>
-            <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {skillRatings.map((skill, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <span className="text-foreground font-medium min-w-fit pr-4">{skill.name}</span>
-                  <div className="flex-1">
-                    {renderStars(skill.rating)}
-                  </div>
+                <div key={index} className="space-y-2">
+                  <span className="text-foreground font-medium block">{skill.name}</span>
+                  {renderRatingBars(skill.rating)}
                 </div>
               ))}
             </div>

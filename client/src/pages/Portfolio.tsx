@@ -1,14 +1,16 @@
 import { Link } from "wouter";
-import { ArrowLeft, ExternalLink, Download } from "lucide-react";
+import { ArrowLeft, ExternalLink, Download, Moon, Sun } from "lucide-react";
 import { OWNER_NAME, PROJECTS, PORTFOLIO_CATEGORIES } from "@/const";
 import SampleDocuments from "@/components/SampleDocuments";
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function Portfolio() {
   const [activeCategory, setActiveCategory] = useState<string>("dutoan");
   const { language } = useLanguage();
+  const { theme, toggleTheme, switchable } = useTheme();
   const filteredProjects = PROJECTS.filter(p => p.category === activeCategory);
 
   const translations = {
@@ -45,25 +47,41 @@ export default function Portfolio() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-background border-b border-border">
+      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/50">
         <div className="container py-4 flex items-center justify-between">
           <Link href="/">
-            <a className="text-2xl font-bold text-accent hover:opacity-80 transition-smooth">
+            <a className="text-xl font-bold text-foreground hover:text-accent transition-smooth">
               Nguyễn Mạnh Đạt
             </a>
           </Link>
-          <div className="flex items-center gap-8">
-            <div className="hidden md:flex gap-8">
+          <div className="flex items-center gap-6">
+            <div className="hidden md:flex gap-6">
+              <Link href="/">
+                <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
+                  {language === "vi" ? "Trang chủ" : "Home"}
+                </a>
+              </Link>
               <Link href="/about">
-                <a className="text-foreground hover:text-accent transition-smooth">{t.about}</a>
+                <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{t.about}</a>
               </Link>
               <Link href="/portfolio">
-                <a className="text-foreground hover:text-accent transition-smooth font-semibold text-accent">{t.portfolio}</a>
+                <a className="text-sm font-medium text-accent hover:text-accent/80 transition-smooth">
+                  {language === "vi" ? "Kinh nghiệm" : "Experiences"}
+                </a>
               </Link>
               <Link href="/contact">
-                <a className="text-foreground hover:text-accent transition-smooth">{t.contact}</a>
+                <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{t.contact}</a>
               </Link>
             </div>
+            {switchable && toggleTheme && (
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-full hover:bg-secondary transition-smooth"
+                aria-label="Toggle theme"
+              >
+                {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+              </button>
+            )}
             <LanguageSwitcher />
           </div>
         </div>
@@ -96,11 +114,10 @@ export default function Portfolio() {
               <button
                 key={category.id}
                 onClick={() => setActiveCategory(category.id)}
-                className={`px-6 py-2 rounded-lg font-semibold transition-smooth ${
-                  activeCategory === category.id
+                className={`px-6 py-2 rounded-lg font-semibold transition-smooth ${activeCategory === category.id
                     ? "bg-accent text-accent-foreground shadow-lg"
                     : "bg-background border-2 border-border text-foreground hover:border-accent"
-                }`}
+                  }`}
               >
                 {language === "vi" ? category.name_vi : category.name_en}
               </button>

@@ -1,15 +1,17 @@
 import { Link } from "wouter";
-import { ArrowLeft, Mail, Phone, MapPin, Loader2 } from "lucide-react";
+import { ArrowLeft, Mail, Phone, MapPin, Loader2, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { OWNER_NAME, OWNER_EMAIL, OWNER_PHONE, OWNER_LOCATION, FORMSPREE_ID } from "@/const";
 import { trackEvent } from "@/hooks/useGoogleAnalytics";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { toast } from "sonner";
 
 export default function Contact() {
   const { language } = useLanguage();
+  const { theme, toggleTheme, switchable } = useTheme();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -71,7 +73,7 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.email || !formData.subject || !formData.message) {
       toast.error(content.errorMessage);
       return;
@@ -123,29 +125,45 @@ export default function Contact() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-background border-b border-border">
+      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/50">
         <div className="container py-4 flex items-center justify-between">
           <Link href="/">
-            <a className="text-2xl font-bold text-accent hover:opacity-80 transition-smooth">
-              {OWNER_NAME.split(" ")[2]}
+            <a className="text-xl font-bold text-foreground hover:text-accent transition-smooth">
+              Nguyễn Mạnh Đạt
             </a>
           </Link>
-          <div className="flex gap-8 items-center">
-            <Link href="/about">
-              <a className="text-foreground hover:text-accent transition-smooth">
-                {content.about}
-              </a>
-            </Link>
-            <Link href="/portfolio">
-              <a className="text-foreground hover:text-accent transition-smooth">
-                {content.portfolio}
-              </a>
-            </Link>
-            <Link href="/contact">
-              <a className="text-foreground hover:text-accent transition-smooth font-semibold">
-                {content.contact}
-              </a>
-            </Link>
+          <div className="flex items-center gap-6">
+            <div className="hidden md:flex gap-6">
+              <Link href="/">
+                <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
+                  {language === "vi" ? "Trang chủ" : "Home"}
+                </a>
+              </Link>
+              <Link href="/about">
+                <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
+                  {content.about}
+                </a>
+              </Link>
+              <Link href="/portfolio">
+                <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
+                  {language === "vi" ? "Kinh nghiệm" : "Experiences"}
+                </a>
+              </Link>
+              <Link href="/contact">
+                <a className="text-sm font-medium text-accent hover:text-accent/80 transition-smooth">
+                  {content.contact}
+                </a>
+              </Link>
+            </div>
+            {switchable && toggleTheme && (
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-full hover:bg-secondary transition-smooth"
+                aria-label="Toggle theme"
+              >
+                {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+              </button>
+            )}
             <LanguageSwitcher />
           </div>
         </div>
@@ -253,7 +271,7 @@ export default function Contact() {
           <aside className="lg:col-span-1">
             <div className="bg-secondary p-6 rounded-lg border border-border sticky top-24">
               <h3 className="text-lg font-bold text-foreground mb-6">{content.contactInfo}</h3>
-              
+
               <div className="space-y-6">
                 <div className="flex gap-4">
                   <Mail className="h-6 w-6 text-accent flex-shrink-0 mt-1" />
