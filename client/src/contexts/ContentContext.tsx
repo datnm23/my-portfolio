@@ -1,5 +1,5 @@
 import { createContext, useContext, ReactNode } from 'react';
-import { useContentStorage, ContentData } from '@/hooks/useContentStorage';
+import { useContentStorage, ContentData, SyncStatus } from '@/hooks/useContentStorage';
 import {
     OWNER_NAME, OWNER_EMAIL, OWNER_PHONE, OWNER_LOCATION,
     SOCIAL_LINKS, SKILLS, SOFTWARE_SKILLS, EXPERIENCES, PROJECTS, SAMPLE_DOCUMENTS, AVATAR_URL
@@ -24,15 +24,35 @@ interface ContentContextType {
     content: ContentData;
     updateContent: (updates: Partial<ContentData>) => void;
     resetToDefaults: () => void;
+    syncStatus: SyncStatus;
+    lastSynced: Date | null;
+    syncFromGist: () => Promise<boolean>;
+    syncToGist: () => Promise<boolean>;
 }
 
 const ContentContext = createContext<ContentContextType | null>(null);
 
 export function ContentProvider({ children }: { children: ReactNode }) {
-    const { content, updateContent, resetToDefaults } = useContentStorage(defaultContent);
+    const {
+        content,
+        updateContent,
+        resetToDefaults,
+        syncStatus,
+        lastSynced,
+        syncFromGist,
+        syncToGist
+    } = useContentStorage(defaultContent);
 
     return (
-        <ContentContext.Provider value={{ content, updateContent, resetToDefaults }}>
+        <ContentContext.Provider value={{
+            content,
+            updateContent,
+            resetToDefaults,
+            syncStatus,
+            lastSynced,
+            syncFromGist,
+            syncToGist
+        }}>
             {children}
         </ContentContext.Provider>
     );

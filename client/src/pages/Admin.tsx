@@ -1,18 +1,25 @@
 import { Link } from "wouter";
-import { ArrowLeft, Plus, Trash2, Edit2, Save, X, LogOut, RotateCcw } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Edit2, Save, X, LogOut, RotateCcw, Cloud, CloudOff, RefreshCw, Check, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { OWNER_NAME, PORTFOLIO_CATEGORIES } from "@/const";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useContent } from "@/contexts/ContentContext";
 import { toast } from "sonner";
+import { getGistConfig, saveGistConfig, clearGistConfig, testGistConnection, GistConfig } from "@/lib/gistApi";
 
 type TabType = "about" | "experiences" | "projects" | "documents" | "config";
 
 export default function Admin() {
   const { isAuthenticated, password, setPassword, error, login, logout } = useAdminAuth();
-  const { content, updateContent, resetToDefaults } = useContent();
+  const { content, updateContent, resetToDefaults, syncStatus, lastSynced, syncFromGist, syncToGist } = useContent();
   const [activeTab, setActiveTab] = useState<TabType>("about");
+
+  // Gist config states
+  const [gistId, setGistId] = useState("");
+  const [gistToken, setGistToken] = useState("");
+  const [gistConnected, setGistConnected] = useState(false);
+  const [testingConnection, setTestingConnection] = useState(false);
 
   // Edit states
   const [editingExpId, setEditingExpId] = useState<number | null>(null);
@@ -23,6 +30,62 @@ export default function Admin() {
   const [showAddExp, setShowAddExp] = useState(false);
   const [showAddProject, setShowAddProject] = useState(false);
   const [showAddDoc, setShowAddDoc] = useState(false);
+
+  // Load Gist config on mount
+  useEffect(() => {
+    const config = getGistConfig();
+    if (config) {
+      setGistId(config.gistId);
+      setGistToken(config.token);
+      setGistConnected(true);
+    }
+  }, []);
+
+  // Gist handlers
+  const handleTestGistConnection = async () => {
+    if (!gistId || !gistToken) {
+      toast.error("Vui lòng nhập Gist ID và Token");
+      return;
+    }
+    setTestingConnection(true);
+    const result = await testGistConnection({ gistId, token: gistToken });
+    setTestingConnection(false);
+
+    if (result.success) {
+      saveGistConfig({ gistId, token: gistToken });
+      setGistConnected(true);
+      syncFromGist();
+      toast.success(result.message);
+    } else {
+      toast.error(result.message);
+    }
+  };
+
+  const handleDisconnectGist = () => {
+    clearGistConfig();
+    setGistConnected(false);
+    setGistId("");
+    setGistToken("");
+    toast.success("Đã ngắt kết nối Gist");
+  };
+
+  const handleSyncToGist = async () => {
+    const success = await syncToGist();
+    if (success) {
+      toast.success("Đã đồng bộ lên Gist!");
+    } else {
+      toast.error("Lỗi khi đồng bộ lên Gist");
+    }
+  };
+
+  const handleSyncFromGist = async () => {
+    const success = await syncFromGist();
+    if (success) {
+      toast.success("Đã tải dữ liệu từ Gist!");
+    } else {
+      toast.error("Lỗi khi tải từ Gist");
+    }
+  };
 
   const handleLogin = () => {
     if (login(password)) {
@@ -249,8 +312,8 @@ export default function Admin() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id as TabType)}
               className={`px-4 py-2 rounded-lg font-medium transition-smooth ${activeTab === tab.id
-                  ? "bg-accent text-accent-foreground"
-                  : "bg-secondary text-foreground hover:bg-secondary/80"
+                ? "bg-accent text-accent-foreground"
+                : "bg-secondary text-foreground hover:bg-secondary/80"
                 }`}
             >
               {tab.label}
@@ -513,6 +576,50 @@ export default function Admin() {
                         placeholder="Role (EN)"
                       />
                     </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Nhiệm vụ (VI) - mỗi dòng 1 nhiệm vụ</label>
+                        <textarea
+                          value={project.responsibilities_vi.join("\n")}
+                          onChange={(e) => handleUpdateProject(project.id, { responsibilities_vi: e.target.value.split("\n").filter(r => r.trim()) })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                          rows={4}
+                          placeholder="Nhiệm vụ 1&#10;Nhiệm vụ 2"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Responsibilities (EN)</label>
+                        <textarea
+                          value={project.responsibilities_en.join("\n")}
+                          onChange={(e) => handleUpdateProject(project.id, { responsibilities_en: e.target.value.split("\n").filter(r => r.trim()) })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                          rows={4}
+                          placeholder="Task 1&#10;Task 2"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Điểm nổi bật (VI) - mỗi dòng 1 điểm</label>
+                        <textarea
+                          value={project.highlights_vi.join("\n")}
+                          onChange={(e) => handleUpdateProject(project.id, { highlights_vi: e.target.value.split("\n").filter(h => h.trim()) })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                          rows={4}
+                          placeholder="Điểm nổi bật 1&#10;Điểm nổi bật 2"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Highlights (EN)</label>
+                        <textarea
+                          value={project.highlights_en.join("\n")}
+                          onChange={(e) => handleUpdateProject(project.id, { highlights_en: e.target.value.split("\n").filter(h => h.trim()) })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                          rows={4}
+                          placeholder="Highlight 1&#10;Highlight 2"
+                        />
+                      </div>
+                    </div>
                     <Button onClick={() => setEditingProjectId(null)} size="sm">
                       <Save className="h-4 w-4 mr-2" />
                       Xong
@@ -638,13 +745,110 @@ export default function Admin() {
         {/* Config Tab */}
         {activeTab === "config" && (
           <div className="space-y-6">
+            {/* GitHub Gist Configuration */}
+            <div className="bg-secondary p-6 rounded-lg border border-border">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  {gistConnected ? <Cloud className="text-green-500" /> : <CloudOff className="text-muted-foreground" />}
+                  GitHub Gist Sync
+                </h2>
+                {gistConnected && (
+                  <div className="flex items-center gap-2 text-sm">
+                    {syncStatus === 'syncing' && <RefreshCw className="h-4 w-4 animate-spin text-blue-500" />}
+                    {syncStatus === 'synced' && <Check className="h-4 w-4 text-green-500" />}
+                    {syncStatus === 'error' && <AlertCircle className="h-4 w-4 text-red-500" />}
+                    <span className="text-muted-foreground">
+                      {syncStatus === 'syncing' && 'Đang đồng bộ...'}
+                      {syncStatus === 'synced' && lastSynced && `Đồng bộ lúc ${lastSynced.toLocaleTimeString()}`}
+                      {syncStatus === 'error' && 'Lỗi đồng bộ'}
+                      {syncStatus === 'offline' && 'Offline'}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {!gistConnected ? (
+                <div className="space-y-4">
+                  <p className="text-muted-foreground text-sm">
+                    Kết nối GitHub Gist để đồng bộ dữ liệu giữa các thiết bị.
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Gist ID</label>
+                      <input
+                        type="text"
+                        value={gistId}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setGistId(e.target.value)}
+                        placeholder="abc123..."
+                        className="w-full px-3 py-2 rounded-lg border border-border bg-background"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Lấy từ URL: gist.github.com/username/<b>gist_id</b>
+                      </p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Personal Access Token</label>
+                      <input
+                        type="password"
+                        value={gistToken}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setGistToken(e.target.value)}
+                        placeholder="ghp_xxxxxxxxxxxx"
+                        className="w-full px-3 py-2 rounded-lg border border-border bg-background"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Tạo tại github.com/settings/tokens (quyền: gist)
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={handleTestGistConnection}
+                    disabled={testingConnection || !gistId || !gistToken}
+                    className="w-full md:w-auto"
+                  >
+                    {testingConnection ? (
+                      <>
+                        <RefreshCw className="h-4 w-4 animate-spin mr-2" />
+                        Đang kết nối...
+                      </>
+                    ) : (
+                      <>
+                        <Cloud className="h-4 w-4 mr-2" />
+                        Kết nối Gist
+                      </>
+                    )}
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                    <Check className="h-5 w-5 text-green-500" />
+                    <span className="text-green-600 dark:text-green-400">Đã kết nối với GitHub Gist</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button onClick={handleSyncFromGist} variant="outline" size="sm">
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Tải từ Gist
+                    </Button>
+                    <Button onClick={handleSyncToGist} variant="outline" size="sm">
+                      <Cloud className="h-4 w-4 mr-2" />
+                      Đồng bộ lên Gist
+                    </Button>
+                    <Button onClick={handleDisconnectGist} variant="outline" size="sm" className="text-red-500">
+                      <CloudOff className="h-4 w-4 mr-2" />
+                      Ngắt kết nối
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div className="bg-secondary p-6 rounded-lg border border-border">
               <h2 className="text-xl font-bold mb-4">Hướng dẫn</h2>
               <div className="text-muted-foreground space-y-2">
                 <p>• Tất cả thay đổi được lưu tự động vào localStorage của trình duyệt.</p>
                 <p>• Dữ liệu sẽ được giữ nguyên khi refresh trang.</p>
                 <p>• Nhấn nút "Reset" ở góc trên để đặt lại về mặc định.</p>
-                <p>• Dữ liệu chỉ lưu trên trình duyệt này, không đồng bộ giữa các thiết bị.</p>
+                <p>• Kết nối GitHub Gist để đồng bộ dữ liệu giữa các thiết bị.</p>
               </div>
             </div>
 
