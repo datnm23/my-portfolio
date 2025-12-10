@@ -7,8 +7,9 @@ import { vitePluginManusRuntime } from "vite-plugin-manus-runtime";
 
 const plugins = [react(), tailwindcss(), vitePluginManusRuntime()];
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins,
+  base: mode === 'production' ? '/my-portfolio/' : '/',
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
