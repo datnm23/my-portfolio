@@ -207,7 +207,7 @@ export default function About() {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {SOFTWARE_SKILLS.map((software, index) => (
                 <div key={index} className="bg-secondary p-4 rounded-lg border border-border text-center hover:bg-accent/10 transition-smooth">
-                  <img src={software.icon} alt={software.name} className="w-12 h-12 mx-auto mb-2 object-contain" />
+                  <img src={`${import.meta.env.BASE_URL}${software.icon.replace(/^\//, '')}`} alt={software.name} className="w-12 h-12 mx-auto mb-2 object-contain" />
                   <p className="text-sm font-semibold text-foreground">{software.name}</p>
                 </div>
               ))}
