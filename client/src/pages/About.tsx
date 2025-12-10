@@ -3,6 +3,7 @@ import { OWNER_NAME, OWNER_EMAIL, OWNER_PHONE, OWNER_LOCATION, SKILLS, EXPERIENC
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import PageLayout from "@/components/PageLayout";
 import { Link } from "wouter";
 
 export default function About() {
@@ -89,179 +90,181 @@ export default function About() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/50">
-        <div className="container py-4 flex items-center justify-between">
+    <PageLayout>
+      <div className="min-h-screen flex flex-col bg-background">
+        {/* Navigation */}
+        <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/50">
+          <div className="container py-4 flex items-center justify-between">
+            <Link href="/">
+              <a className="text-xl font-bold text-foreground hover:text-accent transition-smooth">
+                Nguyễn Mạnh Đạt
+              </a>
+            </Link>
+            <div className="flex items-center gap-6">
+              <div className="hidden md:flex gap-6">
+                <Link href="/">
+                  <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
+                    {language === "vi" ? "Trang chủ" : "Home"}
+                  </a>
+                </Link>
+                <Link href="/about">
+                  <a className="text-sm font-medium text-accent hover:text-accent/80 transition-smooth">{content.about}</a>
+                </Link>
+                <Link href="/portfolio">
+                  <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
+                    {language === "vi" ? "Kinh nghiệm" : "Experiences"}
+                  </a>
+                </Link>
+                <Link href="/contact">
+                  <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{content.contact}</a>
+                </Link>
+              </div>
+              {switchable && toggleTheme && (
+                <button
+                  onClick={toggleTheme}
+                  className="p-2 rounded-full hover:bg-secondary transition-smooth"
+                  aria-label="Toggle theme"
+                >
+                  {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+                </button>
+              )}
+              <LanguageSwitcher />
+            </div>
+          </div>
+        </nav>
+
+        {/* Main Content */}
+        <main className="flex-1 container py-12 md:py-20">
           <Link href="/">
-            <a className="text-xl font-bold text-foreground hover:text-accent transition-smooth">
-              Nguyễn Mạnh Đạt
+            <a className="inline-flex items-center gap-2 text-accent hover:opacity-80 transition-smooth mb-8">
+              <ArrowLeft className="h-4 w-4" />
+              {content.back}
             </a>
           </Link>
-          <div className="flex items-center gap-6">
-            <div className="hidden md:flex gap-6">
-              <Link href="/">
-                <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
-                  {language === "vi" ? "Trang chủ" : "Home"}
+
+          {/* Header */}
+          <div className="mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+              {OWNER_NAME}
+            </h1>
+            <p className="text-xl text-muted-foreground mb-6">
+              {content.subtitle}
+            </p>
+            <div className="flex flex-col gap-4">
+              <div className="flex gap-4 flex-wrap">
+                <a href={`mailto:${OWNER_EMAIL}`} className="text-accent hover:opacity-80 transition-smooth">
+                  {OWNER_EMAIL}
                 </a>
-              </Link>
-              <Link href="/about">
-                <a className="text-sm font-medium text-accent hover:text-accent/80 transition-smooth">{content.about}</a>
-              </Link>
-              <Link href="/portfolio">
-                <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
-                  {language === "vi" ? "Kinh nghiệm" : "Experiences"}
+                <span className="text-muted-foreground">•</span>
+                <a href={`tel:${OWNER_PHONE}`} className="text-accent hover:opacity-80 transition-smooth">
+                  {OWNER_PHONE}
                 </a>
-              </Link>
-              <Link href="/contact">
-                <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{content.contact}</a>
-              </Link>
-            </div>
-            {switchable && toggleTheme && (
+                <span className="text-muted-foreground">•</span>
+                <span className="text-muted-foreground">{OWNER_LOCATION}</span>
+              </div>
               <button
-                onClick={toggleTheme}
-                className="p-2 rounded-full hover:bg-secondary transition-smooth"
-                aria-label="Toggle theme"
+                onClick={() => {
+                  const link = document.createElement("a");
+                  link.href = CV_FILE_PATH;
+                  link.download = "CV_Nguyen_Manh_Dat.pdf";
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
+                className="w-fit px-6 py-2 bg-accent text-accent-foreground rounded-lg font-semibold hover:opacity-90 transition-smooth flex items-center gap-2"
               >
-                {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+                <Download className="h-4 w-4" />
+                {content.downloadCV}
               </button>
-            )}
-            <LanguageSwitcher />
+            </div>
           </div>
-        </div>
-      </nav>
 
-      {/* Main Content */}
-      <main className="flex-1 container py-12 md:py-20">
-        <Link href="/">
-          <a className="inline-flex items-center gap-2 text-accent hover:opacity-80 transition-smooth mb-8">
-            <ArrowLeft className="h-4 w-4" />
-            {content.back}
-          </a>
-        </Link>
+          {/* Content */}
+          <div className="max-w-4xl">
+            {/* About Section */}
+            <section className="mb-16">
+              <h2 className="text-3xl font-bold text-foreground mb-6">{content.introduction}</h2>
+              <div className="space-y-4 text-muted-foreground leading-relaxed">
+                <p>{content.introText1}</p>
+                <p>{content.introText2}</p>
+              </div>
+            </section>
 
-        {/* Header */}
-        <div className="mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            {OWNER_NAME}
-          </h1>
-          <p className="text-xl text-muted-foreground mb-6">
-            {content.subtitle}
-          </p>
-          <div className="flex flex-col gap-4">
-            <div className="flex gap-4 flex-wrap">
-              <a href={`mailto:${OWNER_EMAIL}`} className="text-accent hover:opacity-80 transition-smooth">
-                {OWNER_EMAIL}
-              </a>
-              <span className="text-muted-foreground">•</span>
-              <a href={`tel:${OWNER_PHONE}`} className="text-accent hover:opacity-80 transition-smooth">
-                {OWNER_PHONE}
-              </a>
-              <span className="text-muted-foreground">•</span>
-              <span className="text-muted-foreground">{OWNER_LOCATION}</span>
-            </div>
-            <button
-              onClick={() => {
-                const link = document.createElement("a");
-                link.href = CV_FILE_PATH;
-                link.download = "CV_Nguyen_Manh_Dat.pdf";
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-              }}
-              className="w-fit px-6 py-2 bg-accent text-accent-foreground rounded-lg font-semibold hover:opacity-90 transition-smooth flex items-center gap-2"
-            >
-              <Download className="h-4 w-4" />
-              {content.downloadCV}
-            </button>
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="max-w-4xl">
-          {/* About Section */}
-          <section className="mb-16">
-            <h2 className="text-3xl font-bold text-foreground mb-6">{content.introduction}</h2>
-            <div className="space-y-4 text-muted-foreground leading-relaxed">
-              <p>{content.introText1}</p>
-              <p>{content.introText2}</p>
-            </div>
-          </section>
-
-          {/* Skills Section with Rating Bars */}
-          <section className="mb-16">
-            <h2 className="text-3xl font-bold text-foreground mb-8">{content.skills}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {skillRatings.map((skill, index) => (
-                <div key={index} className="space-y-2">
-                  <span className="text-foreground font-medium block">{skill.name}</span>
-                  {renderRatingBars(skill.rating)}
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Software Skills Section */}
-          <section className="mb-16">
-            <h2 className="text-3xl font-bold text-foreground mb-8">{content.software}</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {SOFTWARE_SKILLS.map((software, index) => (
-                <div key={index} className="bg-secondary p-4 rounded-lg border border-border text-center hover:bg-accent/10 transition-smooth">
-                  <img src={`${import.meta.env.BASE_URL}${software.icon.replace(/^\//, '')}`} alt={software.name} className="w-12 h-12 mx-auto mb-2 object-contain" />
-                  <p className="text-sm font-semibold text-foreground">{software.name}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Experience Section */}
-          <section className="mb-16">
-            <h2 className="text-3xl font-bold text-foreground mb-8">{content.experience}</h2>
-            <div className="space-y-8">
-              {EXPERIENCES.map((exp) => (
-                <div key={exp.id} className="border-l-2 border-accent pl-6">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
-                    <h3 className="text-lg font-bold text-foreground">{exp.title}</h3>
-                    <span className="text-sm text-muted-foreground">{exp.period}</span>
+            {/* Skills Section with Rating Bars */}
+            <section className="mb-16">
+              <h2 className="text-3xl font-bold text-foreground mb-8">{content.skills}</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {skillRatings.map((skill, index) => (
+                  <div key={index} className="space-y-2">
+                    <span className="text-foreground font-medium block">{skill.name}</span>
+                    {renderRatingBars(skill.rating)}
                   </div>
-                  <p className="text-accent font-semibold mb-2">{exp.company}</p>
-                  <p className="text-muted-foreground mb-3">{exp.description}</p>
-                  <ul className="space-y-2">
-                    {exp.responsibilities.map((resp, idx) => (
-                      <li key={idx} className="text-sm text-muted-foreground flex gap-3">
-                        <span className="text-accent mt-1">•</span>
-                        <span>{resp}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </section>
+                ))}
+              </div>
+            </section>
 
-          {/* Education Section */}
-          <section className="mb-16">
-            <h2 className="text-3xl font-bold text-foreground mb-6">{content.education}</h2>
-            <div className="border-l-2 border-accent pl-6">
-              <h3 className="text-lg font-bold text-foreground">
-                {language === "vi" ? "Kỹ thuật xây dựng đường bộ và sân bay" : "Road and Airport Construction Engineering"}
-              </h3>
-              <p className="text-accent font-semibold mb-2">
-                {language === "vi" ? "Đại học Thủy Lợi" : "Thuyloi University"}
-              </p>
-              <p className="text-sm text-muted-foreground mb-2">09/2012 - 03/2017</p>
-              <p className="text-muted-foreground">
-                {language === "vi" ? "Tốt nghiệp loại Khá (Trên trung bình)" : "Graduated with Good Honors (Above Average)"}
-              </p>
-            </div>
-          </section>
-        </div>
-      </main>
+            {/* Software Skills Section */}
+            <section className="mb-16">
+              <h2 className="text-3xl font-bold text-foreground mb-8">{content.software}</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {SOFTWARE_SKILLS.map((software, index) => (
+                  <div key={index} className="bg-secondary p-4 rounded-lg border border-border text-center hover:bg-accent/10 transition-smooth">
+                    <img src={`${import.meta.env.BASE_URL}${software.icon.replace(/^\//, '')}`} alt={software.name} className="w-12 h-12 mx-auto mb-2 object-contain" />
+                    <p className="text-sm font-semibold text-foreground">{software.name}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
 
-      {/* Footer */}
-      <footer className="py-8 bg-background border-t border-border text-center text-muted-foreground">
-        <p>© 2025 Nguyễn Mạnh Đạt. {content.allRightsReserved}</p>
-      </footer>
-    </div>
+            {/* Experience Section */}
+            <section className="mb-16">
+              <h2 className="text-3xl font-bold text-foreground mb-8">{content.experience}</h2>
+              <div className="space-y-8">
+                {EXPERIENCES.map((exp) => (
+                  <div key={exp.id} className="border-l-2 border-accent pl-6">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
+                      <h3 className="text-lg font-bold text-foreground">{exp.title}</h3>
+                      <span className="text-sm text-muted-foreground">{exp.period}</span>
+                    </div>
+                    <p className="text-accent font-semibold mb-2">{exp.company}</p>
+                    <p className="text-muted-foreground mb-3">{exp.description}</p>
+                    <ul className="space-y-2">
+                      {exp.responsibilities.map((resp, idx) => (
+                        <li key={idx} className="text-sm text-muted-foreground flex gap-3">
+                          <span className="text-accent mt-1">•</span>
+                          <span>{resp}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Education Section */}
+            <section className="mb-16">
+              <h2 className="text-3xl font-bold text-foreground mb-6">{content.education}</h2>
+              <div className="border-l-2 border-accent pl-6">
+                <h3 className="text-lg font-bold text-foreground">
+                  {language === "vi" ? "Kỹ thuật xây dựng đường bộ và sân bay" : "Road and Airport Construction Engineering"}
+                </h3>
+                <p className="text-accent font-semibold mb-2">
+                  {language === "vi" ? "Đại học Thủy Lợi" : "Thuyloi University"}
+                </p>
+                <p className="text-sm text-muted-foreground mb-2">09/2012 - 03/2017</p>
+                <p className="text-muted-foreground">
+                  {language === "vi" ? "Tốt nghiệp loại Khá (Trên trung bình)" : "Graduated with Good Honors (Above Average)"}
+                </p>
+              </div>
+            </section>
+          </div>
+        </main>
+
+        {/* Footer */}
+        <footer className="py-8 bg-background border-t border-border text-center text-muted-foreground">
+          <p>© 2025 Nguyễn Mạnh Đạt. {content.allRightsReserved}</p>
+        </footer>
+      </div>
+    </PageLayout>
   );
 }
