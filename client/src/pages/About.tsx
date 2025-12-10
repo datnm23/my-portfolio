@@ -1,7 +1,8 @@
 import { ArrowLeft, Download, Moon, Sun } from "lucide-react";
-import { OWNER_NAME, OWNER_EMAIL, OWNER_PHONE, OWNER_LOCATION, SKILLS, EXPERIENCES, CV_FILE_PATH, SOFTWARE_SKILLS } from "@/const";
+import { CV_FILE_PATH, SOFTWARE_SKILLS } from "@/const";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useContent } from "@/contexts/ContentContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import PageLayout from "@/components/PageLayout";
 import { Link } from "wouter";
@@ -9,6 +10,7 @@ import { Link } from "wouter";
 export default function About() {
   const { language } = useLanguage();
   const { theme, toggleTheme, switchable } = useTheme();
+  const { content: siteContent } = useContent();
 
   const translations = {
     vi: {
@@ -145,22 +147,22 @@ export default function About() {
           {/* Header */}
           <div className="mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              {OWNER_NAME}
+              {siteContent.ownerName}
             </h1>
             <p className="text-xl text-muted-foreground mb-6">
               {content.subtitle}
             </p>
             <div className="flex flex-col gap-4">
               <div className="flex gap-4 flex-wrap">
-                <a href={`mailto:${OWNER_EMAIL}`} className="text-accent hover:opacity-80 transition-smooth">
-                  {OWNER_EMAIL}
+                <a href={`mailto:${siteContent.ownerEmail}`} className="text-accent hover:opacity-80 transition-smooth">
+                  {siteContent.ownerEmail}
                 </a>
                 <span className="text-muted-foreground">•</span>
-                <a href={`tel:${OWNER_PHONE}`} className="text-accent hover:opacity-80 transition-smooth">
-                  {OWNER_PHONE}
+                <a href={`tel:${siteContent.ownerPhone}`} className="text-accent hover:opacity-80 transition-smooth">
+                  {siteContent.ownerPhone}
                 </a>
                 <span className="text-muted-foreground">•</span>
-                <span className="text-muted-foreground">{OWNER_LOCATION}</span>
+                <span className="text-muted-foreground">{siteContent.ownerLocation}</span>
               </div>
               <button
                 onClick={() => {
@@ -220,7 +222,7 @@ export default function About() {
             <section className="mb-16">
               <h2 className="text-3xl font-bold text-foreground mb-8">{content.experience}</h2>
               <div className="space-y-8">
-                {EXPERIENCES.map((exp) => (
+                {siteContent.experiences.map((exp) => (
                   <div key={exp.id} className="border-l-2 border-accent pl-6">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
                       <h3 className="text-lg font-bold text-foreground">{exp.title}</h3>

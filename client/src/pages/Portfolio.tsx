@@ -1,10 +1,11 @@
 import { Link } from "wouter";
 import { ArrowLeft, ExternalLink, Download, Moon, Sun } from "lucide-react";
-import { OWNER_NAME, PROJECTS, PORTFOLIO_CATEGORIES } from "@/const";
+import { PORTFOLIO_CATEGORIES } from "@/const";
 import SampleDocuments from "@/components/SampleDocuments";
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useContent } from "@/contexts/ContentContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import PageLayout from "@/components/PageLayout";
 
@@ -12,7 +13,8 @@ export default function Portfolio() {
   const [activeCategory, setActiveCategory] = useState<string>("dutoan");
   const { language } = useLanguage();
   const { theme, toggleTheme, switchable } = useTheme();
-  const filteredProjects = PROJECTS.filter(p => p.category === activeCategory);
+  const { content: siteContent } = useContent();
+  const filteredProjects = siteContent.projects.filter(p => p.category === activeCategory);
 
   const translations = {
     vi: {
