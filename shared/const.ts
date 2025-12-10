@@ -177,6 +177,7 @@ export const PROJECTS = [
       "Electrical systems (Main distribution board, distribution system)",
       "Other construction items",
     ],
+    visible: true,
   },
   {
     id: 2,
@@ -207,6 +208,7 @@ export const PROJECTS = [
       "Detailed materials list",
       "Accurate labor calculations",
     ],
+    visible: true,
   },
   {
     id: 3,
@@ -239,5 +241,6 @@ export const PROJECTS = [
       "Detailed dimensions, quantities, steel weights",
       "Detailed quantity calculations",
     ],
+    visible: true,
   },
 ];

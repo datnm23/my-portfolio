@@ -14,7 +14,7 @@ export default function Portfolio() {
   const { language } = useLanguage();
   const { theme, toggleTheme, switchable } = useTheme();
   const { content: siteContent } = useContent();
-  const filteredProjects = siteContent.projects.filter(p => p.category === activeCategory);
+  const filteredProjects = siteContent.projects.filter(p => p.category === activeCategory && p.visible !== false);
 
   const translations = {
     vi: {

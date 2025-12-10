@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { ArrowLeft, Plus, Trash2, Edit2, Save, X, LogOut, RotateCcw, Cloud, CloudOff, RefreshCw, Check, AlertCircle } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Edit2, Save, X, LogOut, RotateCcw, Cloud, CloudOff, RefreshCw, Check, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { OWNER_NAME, PORTFOLIO_CATEGORIES } from "@/const";
@@ -165,6 +165,7 @@ export default function Admin() {
       responsibilities_en: ["Task 1"],
       highlights_vi: ["Điểm nổi bật 1"],
       highlights_en: ["Highlight 1"],
+      visible: true,
     };
     updateContent({ projects: [...content.projects, newProject] });
     setEditingProjectId(newProject.id);
@@ -176,6 +177,14 @@ export default function Admin() {
     updateContent({
       projects: content.projects.map(p => p.id === id ? { ...p, ...updates } : p)
     });
+  };
+
+  const handleToggleProjectVisibility = (id: number) => {
+    const project = content.projects.find(p => p.id === id);
+    if (project) {
+      handleUpdateProject(id, { visible: !project.visible });
+      toast.success(project.visible ? "Đã ẩn dự án!" : "Đã hiện dự án!");
+    }
   };
 
   const handleDeleteProject = (id: number) => {
@@ -626,16 +635,29 @@ export default function Admin() {
                     </Button>
                   </div>
                 ) : (
-                  <div>
+                  <div className={project.visible === false ? "opacity-50" : ""}>
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <h3 className="font-bold text-lg">{project.title}</h3>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-bold text-lg">{project.title}</h3>
+                          {project.visible === false && (
+                            <span className="text-xs bg-yellow-500/20 text-yellow-600 px-2 py-0.5 rounded">Ẩn</span>
+                          )}
+                        </div>
                         <p className="text-accent">{project.location} • {project.year}</p>
                         <span className="inline-block mt-1 px-2 py-1 bg-accent/10 text-accent text-xs rounded">
                           {PORTFOLIO_CATEGORIES.find(c => c.id === project.category)?.name_vi || project.category}
                         </span>
                       </div>
                       <div className="flex gap-2">
+                        <Button
+                          onClick={() => handleToggleProjectVisibility(project.id)}
+                          variant="outline"
+                          size="sm"
+                          title={project.visible !== false ? "Ẩn dự án" : "Hiện dự án"}
+                        >
+                          {project.visible !== false ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                        </Button>
                         <Button onClick={() => setEditingProjectId(project.id)} variant="outline" size="sm">
                           <Edit2 className="h-4 w-4" />
                         </Button>

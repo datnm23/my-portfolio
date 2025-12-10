@@ -48,6 +48,7 @@ export interface ContentData {
         responsibilities_en: string[];
         highlights_vi: string[];
         highlights_en: string[];
+        visible: boolean;
     }[];
 
     // Documents
