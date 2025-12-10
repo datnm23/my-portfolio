@@ -107,7 +107,7 @@ export default function Portfolio() {
       </section>
 
       {/* Category Tabs */}
-      <section className="py-8 bg-secondary/30 sticky top-16 z-40 border-b border-border">
+      <section className="py-8 bg-background/80 backdrop-blur-sm sticky top-16 z-40 border-b border-border">
         <div className="container">
           <div className="flex flex-wrap gap-4">
             {PORTFOLIO_CATEGORIES.map((category) => (
@@ -115,8 +115,8 @@ export default function Portfolio() {
                 key={category.id}
                 onClick={() => setActiveCategory(category.id)}
                 className={`px-6 py-2 rounded-lg font-semibold transition-smooth ${activeCategory === category.id
-                    ? "bg-accent text-accent-foreground shadow-lg"
-                    : "bg-background border-2 border-border text-foreground hover:border-accent"
+                  ? "bg-accent text-accent-foreground shadow-lg"
+                  : "bg-background border-2 border-border text-foreground hover:border-accent"
                   }`}
               >
                 {language === "vi" ? category.name_vi : category.name_en}

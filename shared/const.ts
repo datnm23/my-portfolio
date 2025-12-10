@@ -24,12 +24,13 @@ export const SOCIAL_LINKS = {
 };
 
 export const SOFTWARE_SKILLS = [
-  { name: "AutoCAD", icon: "📐" },
-  { name: "Excel", icon: "📊" },
-  { name: "G8", icon: "💻" },
-  { name: "Revit", icon: "🏗️" },
-  { name: "Project", icon: "📅" },
-  { name: "Office", icon: "📄" },
+  { name: "AutoCAD", icon: "/image/skills/autocad.svg" },
+  { name: "Excel", icon: "/image/skills/excel.svg" },
+  { name: "G8", icon: "/image/skills/g8.png" },
+  { name: "Revit", icon: "/image/skills/revit.svg" },
+  { name: "Project", icon: "/image/skills/project.svg" },
+  { name: "Office", icon: "/image/skills/office.svg" },
+  { name: "PowerPoint", icon: "/image/skills/powerpoint.svg" },
 ];
 
 export const AVATAR_URL = "https://placehold.co/200x200/E1E7EF/1F2937?text=Avatar";
