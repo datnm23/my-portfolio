@@ -43,9 +43,8 @@ export async function fetchGistContent<T>(config: GistConfig): Promise<T | null>
     try {
         const response = await fetch(`${GIST_API_URL}/${config.gistId}`, {
             headers: {
-                'Authorization': `Bearer ${config.token}`,
-                'Accept': 'application/vnd.github+json',
-                'X-GitHub-Api-Version': '2022-11-28',
+                'Authorization': `token ${config.token}`,
+                'Accept': 'application/vnd.github.v3+json',
             },
         });
 
@@ -75,9 +74,8 @@ export async function updateGistContent<T>(config: GistConfig, content: T): Prom
         const response = await fetch(`${GIST_API_URL}/${config.gistId}`, {
             method: 'PATCH',
             headers: {
-                'Authorization': `Bearer ${config.token}`,
-                'Accept': 'application/vnd.github+json',
-                'X-GitHub-Api-Version': '2022-11-28',
+                'Authorization': `token ${config.token}`,
+                'Accept': 'application/vnd.github.v3+json',
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -106,9 +104,8 @@ export async function testGistConnection(config: GistConfig): Promise<{ success:
     try {
         const response = await fetch(`${GIST_API_URL}/${config.gistId}`, {
             headers: {
-                'Authorization': `Bearer ${config.token}`,
-                'Accept': 'application/vnd.github+json',
-                'X-GitHub-Api-Version': '2022-11-28',
+                'Authorization': `token ${config.token}`,
+                'Accept': 'application/vnd.github.v3+json',
             },
         });
 

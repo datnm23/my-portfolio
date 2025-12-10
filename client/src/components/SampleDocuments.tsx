@@ -1,12 +1,16 @@
 import { Download, FileText, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SAMPLE_DOCUMENTS } from "@/const";
+import { useContent } from "@/contexts/ContentContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface SampleDocumentsProps {
   category?: string;
 }
 
 export default function SampleDocuments({ category = "dutoan" }: SampleDocumentsProps) {
+  const { content: siteContent } = useContent();
+  const { language } = useLanguage();
+
   const handleDownload = (fileName: string) => {
     const link = document.createElement("a");
     link.href = `/${fileName}`;
@@ -22,74 +26,82 @@ export default function SampleDocuments({ category = "dutoan" }: SampleDocuments
     window.open(viewerUrl, "_blank");
   };
 
-  const filteredDocuments = SAMPLE_DOCUMENTS.filter(doc => doc.category === category);
+  const filteredDocuments = siteContent.documents.filter(doc => doc.category === category);
+
+  const t = {
+    preview: language === "vi" ? "Xem trước" : "Preview",
+    download: language === "vi" ? "Tải xuống" : "Download",
+    content: language === "vi" ? "Nội dung" : "Content",
+    noDocuments: language === "vi" ? "Không có tài liệu cho danh mục này" : "No documents for this category",
+  };
 
   return (
     <div>
-      {/* Documents Grid */}
+      {/* Documents Grid - Same style as Project Cards */}
       {filteredDocuments.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredDocuments.map((doc) => (
             <div
               key={doc.id}
-              className="bg-secondary rounded-lg border border-border p-6 hover:border-accent transition-smooth flex flex-col"
+              className="group bg-background border-2 border-border rounded-lg overflow-hidden hover:border-accent hover:shadow-xl transition-all duration-300"
             >
-              {/* Header */}
-              <div className="mb-4 flex items-start gap-3">
-                <div className="p-2 bg-accent/10 rounded-lg">
-                  <FileText className="h-6 w-6 text-accent" />
-                </div>
-                <div className="flex-1">
-                  <div className="inline-block px-2 py-1 bg-accent/10 text-accent text-xs font-semibold rounded mb-2">
-                    {doc.type}
+              {/* Document Header - Same style as Project Header */}
+              <div className="p-6 border-b border-border bg-secondary/30">
+                <div className="flex items-start justify-between gap-4 mb-2">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-accent/10 rounded-lg">
+                      <FileText className="h-5 w-5 text-accent" />
+                    </div>
+                    <h3 className="text-xl font-bold text-foreground group-hover:text-accent transition-smooth">
+                      {doc.title}
+                    </h3>
                   </div>
-                  <h3 className="text-lg font-bold text-foreground">{doc.title}</h3>
+                  <span className="px-3 py-1 bg-accent/20 text-accent rounded-full text-xs font-semibold whitespace-nowrap">
+                    {doc.type}
+                  </span>
                 </div>
+                <p className="text-sm text-muted-foreground">{doc.fileSize}</p>
               </div>
 
-              {/* Description */}
-              <p className="text-sm text-muted-foreground mb-4 flex-1">
-                {doc.description}
-              </p>
+              {/* Document Body - Same style as Project Body */}
+              <div className="p-6 space-y-4">
+                <p className="text-foreground/80">{doc.description}</p>
 
-              {/* Content Info */}
-              <div className="mb-4 p-3 bg-background rounded border border-border">
-                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                  Nội dung
-                </p>
-                <p className="text-sm text-foreground">{doc.content}</p>
-              </div>
+                {/* Content Info */}
+                {doc.content && (
+                  <div className="p-3 bg-secondary rounded-lg border border-border">
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                      {t.content}
+                    </p>
+                    <p className="text-sm text-foreground">{doc.content}</p>
+                  </div>
+                )}
 
-              {/* File Info */}
-              <div className="mb-6 flex items-center gap-2 text-xs text-muted-foreground">
-                <span className="inline-block w-2 h-2 bg-accent rounded-full"></span>
-                <span>{doc.fileSize}</span>
-              </div>
-
-              {/* Actions */}
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => handlePreview(doc.googleDriveId)}
-                  variant="outline"
-                  className="flex-1"
-                >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Xem trước
-                </Button>
-                <Button
-                  onClick={() => handleDownload(doc.fileName)}
-                  className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90"
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  Tải xuống
-                </Button>
+                {/* Actions - Same button style */}
+                <div className="flex gap-2 pt-2">
+                  <Button
+                    onClick={() => handlePreview(doc.googleDriveId)}
+                    variant="outline"
+                    className="flex-1 group-hover:border-accent group-hover:text-accent"
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    {t.preview}
+                  </Button>
+                  <Button
+                    onClick={() => handleDownload(doc.fileName)}
+                    className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    {t.download}
+                  </Button>
+                </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="text-center py-12 bg-secondary rounded-lg border border-border">
-          <p className="text-muted-foreground">Không có tài liệu cho danh mục này</p>
+        <div className="text-center py-16">
+          <p className="text-lg text-muted-foreground">{t.noDocuments}</p>
         </div>
       )}
     </div>
