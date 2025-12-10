@@ -180,7 +180,7 @@ export default function About() {
           </div>
 
           {/* Content */}
-          <div className="max-w-4xl">
+          <div>
             {/* About Section */}
             <section className="mb-16">
               <h2 className="text-3xl font-bold text-foreground mb-6">{content.introduction}</h2>
