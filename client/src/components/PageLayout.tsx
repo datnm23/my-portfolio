@@ -10,7 +10,7 @@ export default function PageLayout({ children, showSidebars = true }: PageLayout
         <div className="min-h-screen flex bg-muted/30">
             {/* Left Sidebar - Decorative */}
             {showSidebars && (
-                <aside className="hidden lg:block w-24 xl:w-40 2xl:w-56 bg-gradient-to-b from-accent/5 via-transparent to-accent/10 border-r border-border/30 sticky top-0 h-screen">
+                <aside className="hidden lg:block w-32 xl:w-48 2xl:w-72 bg-gradient-to-b from-accent/5 via-transparent to-accent/10 border-r border-border/30 sticky top-0 h-screen">
                 </aside>
             )}
 
@@ -21,9 +21,10 @@ export default function PageLayout({ children, showSidebars = true }: PageLayout
 
             {/* Right Sidebar - Decorative */}
             {showSidebars && (
-                <aside className="hidden lg:block w-24 xl:w-40 2xl:w-56 bg-gradient-to-b from-accent/10 via-transparent to-accent/5 border-l border-border/30 sticky top-0 h-screen">
+                <aside className="hidden lg:block w-32 xl:w-48 2xl:w-72 bg-gradient-to-b from-accent/10 via-transparent to-accent/5 border-l border-border/30 sticky top-0 h-screen">
                 </aside>
             )}
         </div>
     );
 }
+
