@@ -1,0 +1,389 @@
+{
+    "ownerName": "Nguyễn Mạnh Đạt",
+    "ownerEmail": "datnm1594@gmail.com",
+    "ownerPhone": "033 274 5275",
+    "ownerLocation": "Yên Mỹ, Yên Mô, Ninh Bình",
+    "avatarUrl": "https://placehold.co/200x200/E1E7EF/1F2937?text=Avatar",
+    "introduction_vi": "Tôi là kỹ sư dự toán xây dựng với hơn 7 năm kinh nghiệm trong lĩnh vực xây dựng hạ tầng, dân dụng và công nghiệp. Chuyên môn của tôi bao gồm bóc tách khối lượng, lập hồ sơ dự thầu, thanh quyết toán công trình và quản lý dự án.\n\nTôi đã làm việc với các công ty xây dựng hàng đầu, tham gia các dự án quy mô lớn từ hạ tầng đến nhà cao tầng. Với kinh nghiệm này, tôi có thể xử lý các dự án phức tạp, đảm bảo tính chính xác và hiệu quả trong mọi khía cạnh công việc.",
+    "introduction_en": "I am a construction cost engineer with over 7 years of experience in infrastructure, civil, and industrial construction. My expertise includes quantity surveying, bid preparation, project settlement, and project management.\n\nI have worked with leading construction companies, participating in large-scale projects from infrastructure to high-rise buildings. With this experience, I can handle complex projects, ensuring accuracy and efficiency in all aspects of the work.",
+    "socialLinks": {
+        "email": "datnm1594@gmail.com",
+        "phone": "033 274 5275",
+        "linkedin": "https://www.linkedin.com/in/your-profile",
+        "github": "https://github.com/your-profile",
+        "facebook": "https://www.facebook.com/your-profile"
+    },
+    "skills": [
+        {
+            "name": "Bóc tách khối lượng",
+            "name_en": "Quantity Take-off",
+            "rating": 5
+        },
+        {
+            "name": "Lập hồ sơ dự thầu",
+            "name_en": "Bid Preparation",
+            "rating": 5
+        },
+        {
+            "name": "Thanh quyết toán công trình",
+            "name_en": "Project Settlement",
+            "rating": 4
+        },
+        {
+            "name": "Quản lý dự án",
+            "name_en": "Project Management",
+            "rating": 4
+        },
+        {
+            "name": "Microsoft Office",
+            "name_en": "Microsoft Office",
+            "rating": 4
+        },
+        {
+            "name": "AutoCAD",
+            "name_en": "AutoCAD",
+            "rating": 4
+        },
+        {
+            "name": "G8",
+            "name_en": "G8 Software",
+            "rating": 5
+        }
+    ],
+    "softwareSkills": [
+        {
+            "name": "AutoCAD",
+            "icon": "/image/skills/autocad.svg"
+        },
+        {
+            "name": "Excel",
+            "icon": "/image/skills/excel.svg"
+        },
+        {
+            "name": "G8",
+            "icon": "/image/skills/g8.png"
+        },
+        {
+            "name": "Revit",
+            "icon": "/image/skills/revit.svg"
+        },
+        {
+            "name": "Project",
+            "icon": "/image/skills/project.svg"
+        },
+        {
+            "name": "Office",
+            "icon": "/image/skills/office.svg"
+        },
+        {
+            "name": "PowerPoint",
+            "icon": "/image/skills/powerpoint.svg"
+        }
+    ],
+    "experiences": [
+        {
+            "id": 1,
+            "title": "Trưởng nhóm kế hoạch đấu thầu",
+            "title_en": "Bid Planning Team Leader",
+            "company": "AZ Investment JSC",
+            "period": "11/2023 - 04/2025",
+            "description": "Quản lý đấu thầu, kế hoạch & tiến độ, chi phí dự án.",
+            "description_en": "Manage bidding, planning & scheduling, project cost control.",
+            "responsibilities": [
+                "Lập dự toán & đấu thầu: Kiểm soát bóc tách khối lượng; xây dựng ngân sách và lập dự toán chi tiết gói thầu làm cơ sở thương thảo giá.",
+                "Quản lý hợp đồng thầu phụ: Chủ trì soạn thảo, đàm phán các điều khoản và quản lý hợp đồng thầu phụ.",
+                "Quản lý kế hoạch & tiến độ: Xây dựng kế hoạch triển khai dự án tổng thể.",
+                "Kiểm soát thanh quyết toán: Rà soát và thẩm định hồ sơ thanh toán, quyết toán.",
+                "Kiểm soát chi phí: Lập kế hoạch dòng tiền, giám sát định kỳ biến động chi phí."
+            ],
+            "responsibilities_en": [
+                "Estimation & Bidding: Control quantity take-offs; build budget and detailed cost estimates for bid packages.",
+                "Subcontract Management: Lead drafting, negotiating terms and managing subcontracts.",
+                "Planning & Scheduling: Develop comprehensive project implementation plans.",
+                "Settlement Control: Review and verify payment and settlement documents.",
+                "Cost Control: Develop cash flow plans, periodically monitor cost fluctuations."
+            ]
+        },
+        {
+            "id": 2,
+            "title": "Kỹ sư Dự toán & Đấu thầu",
+            "title_en": "Cost Engineer & Bidding Staff",
+            "company": "Delta E&C Engineering and Construction JSC",
+            "period": "08/2022 - 10/2023",
+            "description": "Lập hồ sơ dự thầu",
+            "description_en": "Prepare bidding documents",
+            "responsibilities": [
+                "Bóc tách khối lượng & lập dự toán: Bóc tách khối lượng từ bản vẽ thiết kế.",
+                "Xây dựng đơn giá: Tìm kiếm, đánh giá và đàm phán với Thầu phụ/Nhà cung cấp.",
+                "Lập hồ sơ dự thầu: Hoàn thiện hồ sơ dự thầu.",
+                "Đàm phán và Thương thảo hợp đồng: Phân tích rủi ro, tham gia bảo vệ giá."
+            ],
+            "responsibilities_en": [
+                "Quantity Take-off & Estimation: Extract quantities from design drawings.",
+                "Unit Price Development: Search, evaluate and negotiate with Subcontractors/Suppliers.",
+                "Bid Preparation: Complete bid documents (Legal, capability, financial).",
+                "Contract Negotiation: Risk analysis, participate in price defense."
+            ]
+        },
+        {
+            "id": 4,
+            "title": "Kỹ sư QS & Kỹ sư QA/QC",
+            "title_en": "QS Engineer & QA/QC Engineer",
+            "company": "Công ty cổ phần đầu tư và phát triển đô thị An Phúc Hưng",
+            "period": "01/2018 - 02/2022",
+            "description": "Chủ trì lập hồ sơ thanh toán và quản lý chi phí",
+            "description_en": "Lead payment documentation and cost management",
+            "responsibilities": [
+                "Quản lý thanh toán: Chuẩn bị hồ sơ pháp lý, hồ sơ nghiệm thu.",
+                "Kiểm soát khối lượng: Bóc tách khối lượng (BOQ); kiểm soát hao hụt vật tư.",
+                "Quản lý thầu phụ: Soạn thảo hợp đồng tổ đội/thầu phụ.",
+                "Báo cáo & kiểm soát chi phí: Theo dõi tình trạng thực hiện hợp đồng."
+            ],
+            "responsibilities_en": [
+                "Payment Management: Prepare legal documents, acceptance documents.",
+                "Quantity Control: Quantity take-off (BOQ); control material wastage.",
+                "Subcontractor Management: Draft team/subcontractor contracts.",
+                "Reporting & Cost Control: Monitor contract implementation status."
+            ]
+        },
+        {
+            "id": 3,
+            "title": "Trưởng nhóm QA/QC",
+            "title_en": "QA/QC Team Leader",
+            "company": "Phục Hưng Holdings Construction JSC",
+            "period": "02/2022 - 07/2022",
+            "description": "Quản lý chất lượng, kiểm tra khối lượng, chuẩn bị hồ sơ thanh toán",
+            "description_en": "Quality management, quantity verification, payment document preparation",
+            "responsibilities": [
+                "Chuẩn bị hồ sơ pháp lý, hồ sơ chất lượng và vật liệu cho hồ sơ thanh toán",
+                "Giám sát, kiểm tra và chuẩn bị báo cáo tiến độ chất lượng",
+                "Lập kế hoạch mua sắm vật liệu và giám sát tổn thất"
+            ],
+            "responsibilities_en": [
+                "Prepare legal, quality and material documents for payment files",
+                "Supervise, inspect and prepare quality progress reports",
+                "Plan material procurement and monitor losses"
+            ],
+            "visible": false
+        }
+    ],
+    "projects": [
+        {
+            "id": 1,
+            "title": "Khu căn hộ 21T2 dự án Phenikaa Tower",
+            "title_en": "21T2 Apartment Complex - Phenikaa Tower Project",
+            "location": "Xã Hòa Lạc, Thành phố Hà Nội",
+            "year": "2024-2025",
+            "description": "Lập Hồ sơ chào giá gói thầu \"Cung cấp, lắp đặt hệ thống Cơ điện\"",
+            "description_en": "Prepare Quotation Documents for \"MEP System Supply and Installation\" Package",
+            "role_vi": "Kỹ sư Dự toán",
+            "role_en": "Cost Engineer",
+            "category": "dutoan",
+            "responsibilities_vi": [
+                "Bóc tách khối lượng công việc từ bản vẽ thiết kế",
+                "Lập hồ sơ dự thầu chi tiết",
+                "Tính toán giá trị dự toán từng hạng mục"
+            ],
+            "responsibilities_en": [
+                "Quantity surveying from design drawings",
+                "Prepare detailed bid documents",
+                "Calculate cost estimates for each item"
+            ],
+            "highlights_vi": [
+                "Hệ thống điện",
+                "Hệ thống HVAC",
+                "Hệ thống Cấp thoát nước"
+            ],
+            "highlights_en": [
+                "Electrical systems",
+                "HVAC systems",
+                "Water supply and drainage systems"
+            ],
+            "documentIds": [
+                1
+            ],
+            "categories": [
+                "dutoan"
+            ]
+        },
+        {
+            "id": 2,
+            "title": "Gói thầu xây dựng hạ tầng và nhà xưởng Norman Việt Nam",
+            "title_en": "Norman Vietnam Infrastructure and Factory Construction Package",
+            "location": "Dự án Norman Việt Nam",
+            "year": "2025",
+            "description": "Hồ sơ dự thầu cho hạng mục Hạ tầng kĩ thuật, Nhà xưởng, MEP",
+            "description_en": "Bid documents for Infrastructure, Factory Building, MEP",
+            "role_vi": "Kỹ sư Dự toán",
+            "role_en": "Cost Engineer",
+            "category": "dutoan",
+            "responsibilities_vi": [
+                "Thực hiện bóc tách khối lượng chi tiết.",
+                "Phân tích chi phí và xây dựng đơn giá dự thầu cạnh tranh.",
+                "Tổng hợp và hoàn thiện bộ hồ sơ dự thầu trọn gói (Lump Sum)."
+            ],
+            "responsibilities_en": [
+                "Perform detailed quantity take-offs.",
+                "Analyze costs and develop competitive bid prices.",
+                "Compile and finalize the complete bid package (Lump Sum)."
+            ],
+            "highlights_vi": [
+                "Hạ tầng kỹ thuật",
+                "Nhà xưởng công nghiệp",
+                "MEP"
+            ],
+            "highlights_en": [
+                "Infrastructure",
+                "Industrial factory",
+                "MEP"
+            ],
+            "documentIds": [
+                2
+            ],
+            "categories": [
+                "qs",
+                "dutoan"
+            ]
+        },
+        {
+            "id": 3,
+            "title": "Hồ sơ thanh toán đợt 2 - Dự án Sunshine Crystal River",
+            "title_en": "Payment Documents Phase 2 - Sunshine Crystal River Project",
+            "location": "Dự án Sunshine Crystal River",
+            "year": "2025",
+            "description": "Hồ sơ thanh toán đợt 2 - Hạng mục Landscape khu Cao tầng",
+            "description_en": "Payment documents phase 2 - High-rise Landscape works",
+            "role_vi": "Kỹ sư QS",
+            "role_en": "Quantity Surveyor",
+            "category": "thanhquyettoan",
+            "responsibilities_vi": [
+                "Chủ trì lập hồ sơ thanh toán giai đoạn.",
+                "Hoàn thiện hồ sơ hoàn công và hồ sơ nghiệm thu hạng mục thi công.",
+                "Bảo vệ khối lượng với TVGS và CĐT."
+            ],
+            "responsibilities_en": [
+                "Prepare and control payment applications/documents.",
+                "Finalize as-built documentation and work acceptance certificates.",
+                "Defend and clarify quantities with the Supervision Consultant and the Client."
+            ],
+            "highlights_vi": [
+                "Hồ sơ khối lượng",
+                "Bản vẽ hoàn công",
+                "Hồ sơ nghiệm thu"
+            ],
+            "highlights_en": [
+                "Quantity Documents",
+                "As-built Drawings",
+                "Acceptance Documents"
+            ],
+            "documentIds": [
+                3
+            ],
+            "categories": [
+                "qs",
+                "qa/qc"
+            ]
+        },
+        {
+            "id": 1765352503141,
+            "title": "Khách sạn Nghĩa Lộ",
+            "title_en": "Nghia Lo Hotel",
+            "location": "Yên Bái",
+            "year": "2025",
+            "description": "Bóc tách khối lượng chào thầu, lập hồ sơ dự toán, hồ sơ mời thầu gói thầu.",
+            "description_en": "Quantity take-off for bidding, prepare cost estimates, tender documents for the package.",
+            "role_vi": "Chủ trì dự toán",
+            "role_en": "Lead Estimator",
+            "category": "dutoan",
+            "responsibilities_vi": [
+                "Bóc tách khối lượng chào thầu các hạng mục phá dỡ, cải tạo, kiến trúc, MEP, PCCC.",
+                "Lập Hồ sơ mời thầu gói thầu.",
+                "Lập hồ sơ dự toán các hạng mục phá dỡ, cải tạo, kiến trúc, MEP, PCCC.",
+                "Bảo vệ dự toán với TVTT và CĐT"
+            ],
+            "responsibilities_en": [
+                "Prepare quantity take-offs for demolition, renovation, architectural, MEP, and fire protection items.",
+                "Prepare tender documents for the bidding package.",
+                "Prepare cost estimates for demolition, renovation, architectural, MEP, and fire protection items.",
+                "Defend the cost estimate with the consultant and the client."
+            ],
+            "highlights_vi": [
+                "Phá dỡ, Cải tạo, MEP, Dự toán, Thẩm tra"
+            ],
+            "highlights_en": [
+                "Demolition, Renovation, MEP, Cost Estimation, Verification"
+            ],
+            "visible": false
+        }
+    ],
+    "documents": [
+        {
+            "id": 1,
+            "title": "BOQ MEP - Khu dân cư 21T2 dự án Phenikaa Tower",
+            "title_en": "MEP BOQ - 21T2 Residential Phenikaa Tower Project",
+            "description": "Hồ sơ dự thầu đầy đủ với bóc tách khối lượng chi tiết.",
+            "description_en": "Complete bidding documents with detailed quantity take-off.",
+            "fileName": "250717BOQFULLSỬA-OPB(ORIGINAL)R4-KCT-Gửi.xlsx",
+            "fileSize": "848 KB",
+            "type": "Hồ sơ dự thầu",
+            "type_en": "Bidding Documents",
+            "category": "dutoan",
+            "content": "Bóc tách khối lượng chi tiết, danh sách vật tư, nhân công, máy móc",
+            "content_en": "Detailed quantity take-off, materials list, labor, machinery",
+            "googleDriveId": "1XPFwum3FlJ7D8KYYi5RU5i_h7LZa3ulw"
+        },
+        {
+            "id": 2,
+            "title": "BOQ Gọi thầu MEP - NET-HVC",
+            "title_en": "MEP Tender BOQ - NET-HVC",
+            "description": "Hồ sơ gọi thầu cho hạng mục MEP của dự án NET-HVC.",
+            "description_en": "Tender documents for MEP of NET-HVC project.",
+            "fileName": "NET-HVC-BOQ-GoithauMEP21T2-L1-23-10-2025.xlsx",
+            "fileSize": "377 KB",
+            "type": "Hồ sơ gọi thầu",
+            "type_en": "Tender Documents",
+            "category": "qs",
+            "content": "Danh sách vật tư MEP, khối lượng chi tiết, tính toán nhân công",
+            "content_en": "MEP materials list, detailed quantities, labor calculations",
+            "googleDriveId": "1IvL2eIc9e9bFK6tbFyiDCrehuaIyMqe5"
+        },
+        {
+            "id": 3,
+            "title": "Thanh quyết toán đợt 2 - Sunshine Crystal River",
+            "title_en": "Payment Settlement Phase 2 - Sunshine Crystal River",
+            "description": "Hồ sơ thanh quyết toán đợt 2 cho dự án chung cư cao tầng.",
+            "description_en": "Payment settlement documents phase 2 for high-rise apartment project.",
+            "fileName": "2025.08.11Thanhtoandot2-HD21.2025.CT01.SM-HL.xlsx",
+            "fileSize": "1010 KB",
+            "type": "Hồ sơ thanh quyết toán",
+            "type_en": "Settlement Documents",
+            "category": "thanhquyettoan",
+            "content": "Bảng khối lượng cốt thép, bảng khối lượng vật liệu, tính toán thanh toán",
+            "content_en": "Steel reinforcement quantity tables, material quantity tables, payment calculations",
+            "googleDriveId": "1XPFwum3FlJ7D8KYYi5RU5i_h7LZa3ulw"
+        }
+    ],
+    "categories": [
+        {
+            "id": "qs",
+            "name_vi": "QS",
+            "name_en": "Quantity Surveyor",
+            "description_vi": "Bóc tách khối lượng, kiểm tra chất lượng",
+            "description_en": "Quantity surveying, quality checking"
+        },
+        {
+            "id": "dutoan",
+            "name_vi": "Dự toán",
+            "name_en": "Bid Preparation",
+            "description_vi": "Lập hồ sơ dự thầu, tính toán giá trị",
+            "description_en": "Bid preparation, cost estimation"
+        },
+        {
+            "id": "qa/qc",
+            "name_vi": "QA/QC",
+            "name_en": "QA/QC",
+            "description_vi": "Lập hồ sơ nghiệm thu",
+            "description_en": "Prepare acceptance documents"
+        }
+    ]
+}

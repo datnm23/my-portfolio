@@ -22,8 +22,6 @@ export default function About() {
       title: "Kỹ sư Dự toán Xây dựng",
       subtitle: "Chuyên gia Bóc tách khối lượng & Thanh quyết toán",
       introduction: "Giới thiệu",
-      introText1: "Tôi là một kỹ sư dự toán xây dựng với hơn 7 năm kinh nghiệm trong lĩnh vực xây dựng cơ sở hạ tầng, dân dụng và công nghiệp. Chuyên môn của tôi bao gồm bóc tách khối lượng, lập hồ sơ dự thầu, thanh quyết toán công trình, và quản lý dự án.",
-      introText2: "Tôi đã làm việc với nhiều công ty xây dựng hàng đầu, tham gia vào các dự án quy mô lớn từ cơ sở hạ tầng đến các tòa nhà cao tầng. Với kinh nghiệm này, tôi có khả năng xử lý các dự án phức tạp, đảm bảo tính chính xác và hiệu quả trong mọi khía cạnh của công việc.",
       skills: "Kỹ năng chuyên môn",
       software: "Phần mềm & Công cụ",
       experience: "Kinh nghiệm làm việc",
@@ -44,8 +42,6 @@ export default function About() {
       title: "Construction Cost Engineer",
       subtitle: "Quantity Surveying & Project Settlement Expert",
       introduction: "Introduction",
-      introText1: "I am a construction cost engineer with over 7 years of experience in infrastructure, civil, and industrial construction. My expertise includes quantity surveying, bid preparation, project settlement, and project management.",
-      introText2: "I have worked with leading construction companies, participating in large-scale projects from infrastructure to high-rise buildings. With this experience, I can handle complex projects, ensuring accuracy and efficiency in all aspects of the work.",
       skills: "Professional Skills",
       software: "Software & Tools",
       experience: "Work Experience",
@@ -61,8 +57,10 @@ export default function About() {
 
   const content = translations[language];
 
-  // Use skills from siteContent (editable in Admin)
-  const skillRatings = siteContent.skills || [];
+  // Use skills from siteContent (editable in Admin) - handle both string[] and object[] formats
+  const skillsList = (siteContent.skills || []).map((skill: any) =>
+    typeof skill === 'string' ? skill : (skill.name || skill.name_vi || '')
+  );
 
   const renderRatingBars = (rating: number) => {
     return (
@@ -179,21 +177,44 @@ export default function About() {
             <section className="mb-16">
               <h2 className="text-3xl font-bold text-foreground mb-6">{content.introduction}</h2>
               <div className="space-y-4 text-muted-foreground leading-relaxed">
-                <p>{content.introText1}</p>
-                <p>{content.introText2}</p>
+                {(language === 'en'
+                  ? (siteContent.introduction_en || '')
+                  : (siteContent.introduction_vi || '')
+                ).split('\n\n').map((paragraph: string, idx: number) => (
+                  <p key={idx}>{paragraph}</p>
+                ))}
               </div>
             </section>
 
-            {/* Skills Section with Rating Bars */}
+
+            {/* Skills Section */}
             <section className="mb-16">
               <h2 className="text-3xl font-bold text-foreground mb-8">{content.skills}</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {skillRatings.map((skill, index) => (
-                  <div key={index} className="space-y-2">
-                    <span className="text-foreground font-medium block">{skill.name}</span>
-                    {renderRatingBars(skill.rating)}
-                  </div>
-                ))}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {(siteContent.skills || []).map((skill: any, index: number) => {
+                  // Handle both string format and object format
+                  const skillName = typeof skill === 'string'
+                    ? skill
+                    : (language === 'en' ? (skill.name_en || skill.name) : skill.name);
+                  const skillRating = typeof skill === 'object' ? (skill.rating || 4) : 4;
+
+                  return (
+                    <div key={index} className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-foreground font-medium">{skillName}</span>
+                        <span className="text-sm text-muted-foreground">{skillRating}/5</span>
+                      </div>
+                      <div className="flex gap-1.5">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <div
+                            key={i}
+                            className={`h-2 flex-1 rounded-sm ${i < skillRating ? "bg-accent" : "bg-border"}`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </section>
 
@@ -214,24 +235,33 @@ export default function About() {
             <section className="mb-16">
               <h2 className="text-3xl font-bold text-foreground mb-8">{content.experience}</h2>
               <div className="space-y-8">
-                {siteContent.experiences.filter((exp: any) => exp.visible !== false).map((exp: any) => (
-                  <div key={exp.id} className="border-l-2 border-accent pl-6">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
-                      <h3 className="text-lg font-bold text-foreground">{exp.title}</h3>
-                      <span className="text-sm text-muted-foreground">{exp.period}</span>
+                {siteContent.experiences.filter((exp: any) => exp.visible !== false).map((exp: any) => {
+                  // Language-aware content
+                  const expTitle = language === 'en' ? (exp.title_en || exp.title) : exp.title;
+                  const expDescription = language === 'en' ? (exp.description_en || exp.description) : exp.description;
+                  const expResponsibilities = language === 'en'
+                    ? (exp.responsibilities_en || exp.responsibilities)
+                    : exp.responsibilities;
+
+                  return (
+                    <div key={exp.id} className="border-l-2 border-accent pl-6">
+                      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
+                        <h3 className="text-lg font-bold text-foreground">{expTitle}</h3>
+                        <span className="text-sm text-muted-foreground">{exp.period}</span>
+                      </div>
+                      <p className="text-accent font-semibold mb-2">{exp.company}</p>
+                      <p className="text-muted-foreground mb-3">{expDescription}</p>
+                      <ul className="space-y-2">
+                        {(expResponsibilities || []).map((resp: string, idx: number) => (
+                          <li key={idx} className="text-sm text-muted-foreground flex gap-3">
+                            <span className="text-accent mt-1">•</span>
+                            <span>{resp}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                    <p className="text-accent font-semibold mb-2">{exp.company}</p>
-                    <p className="text-muted-foreground mb-3">{exp.description}</p>
-                    <ul className="space-y-2">
-                      {exp.responsibilities.map((resp, idx) => (
-                        <li key={idx} className="text-sm text-muted-foreground flex gap-3">
-                          <span className="text-accent mt-1">•</span>
-                          <span>{resp}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </section>
 

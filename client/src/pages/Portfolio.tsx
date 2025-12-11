@@ -154,7 +154,7 @@ export default function Portfolio() {
                     <div className="p-6 border-b border-border bg-secondary/30">
                       <div className="flex items-start justify-between gap-4 mb-2">
                         <h3 className="text-xl font-bold text-foreground group-hover:text-accent transition-smooth">
-                          {project.title}
+                          {language === 'en' ? (project.title_en || project.title) : project.title}
                         </h3>
                         <span className="px-3 py-1 bg-accent/20 text-accent rounded-full text-xs font-semibold whitespace-nowrap">
                           {project.year}
@@ -165,7 +165,7 @@ export default function Portfolio() {
 
                     {/* Project Body */}
                     <div className="p-6 space-y-4">
-                      <p className="text-foreground/80">{project.description}</p>
+                      <p className="text-foreground/80">{language === 'en' ? (project.description_en || project.description) : project.description}</p>
 
                       {/* Role */}
                       <div>
@@ -218,48 +218,52 @@ export default function Portfolio() {
                           <div className="space-y-2">
                             {siteContent.documents
                               .filter(doc => project.documentIds?.includes(doc.id))
-                              .map(doc => (
-                                <div key={doc.id} className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg border border-border">
-                                  <div className="flex items-center gap-3">
-                                    <div className="p-1.5 bg-accent/20 rounded">
-                                      <svg className="h-4 w-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                      </svg>
+                              .map(doc => {
+                                const docTitle = language === 'en' ? (doc.title_en || doc.title) : doc.title;
+                                const docType = language === 'en' ? (doc.type_en || doc.type) : doc.type;
+                                return (
+                                  <div key={doc.id} className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg border border-border">
+                                    <div className="flex items-center gap-3">
+                                      <div className="p-1.5 bg-accent/20 rounded">
+                                        <svg className="h-4 w-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                      </div>
+                                      <div>
+                                        <p className="text-sm font-medium text-foreground">{docTitle}</p>
+                                        <p className="text-xs text-muted-foreground">{docType} • {doc.fileSize}</p>
+                                      </div>
                                     </div>
-                                    <div>
-                                      <p className="text-sm font-medium text-foreground">{doc.title}</p>
-                                      <p className="text-xs text-muted-foreground">{doc.type} • {doc.fileSize}</p>
+                                    <div className="flex gap-1">
+                                      <button
+                                        onClick={() => window.open(`https://docs.google.com/spreadsheets/d/${doc.googleDriveId}/edit?usp=sharing`, '_blank')}
+                                        className="p-2 hover:bg-accent/20 rounded-lg transition-colors"
+                                        title={language === "vi" ? "Xem trước" : "Preview"}
+                                      >
+                                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                        </svg>
+                                      </button>
+                                      <button
+                                        onClick={() => {
+                                          const link = document.createElement("a");
+                                          link.href = `/${doc.fileName}`;
+                                          link.download = doc.fileName;
+                                          document.body.appendChild(link);
+                                          link.click();
+                                          document.body.removeChild(link);
+                                        }}
+                                        className="p-2 hover:bg-accent/20 rounded-lg transition-colors"
+                                        title={language === "vi" ? "Tải xuống" : "Download"}
+                                      >
+                                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                      </button>
                                     </div>
                                   </div>
-                                  <div className="flex gap-1">
-                                    <button
-                                      onClick={() => window.open(`https://docs.google.com/spreadsheets/d/${doc.googleDriveId}/edit?usp=sharing`, '_blank')}
-                                      className="p-2 hover:bg-accent/20 rounded-lg transition-colors"
-                                      title={language === "vi" ? "Xem trước" : "Preview"}
-                                    >
-                                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                      </svg>
-                                    </button>
-                                    <button
-                                      onClick={() => {
-                                        const link = document.createElement("a");
-                                        link.href = `/${doc.fileName}`;
-                                        link.download = doc.fileName;
-                                        document.body.appendChild(link);
-                                        link.click();
-                                        document.body.removeChild(link);
-                                      }}
-                                      className="p-2 hover:bg-accent/20 rounded-lg transition-colors"
-                                      title={language === "vi" ? "Tải xuống" : "Download"}
-                                    >
-                                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                      </svg>
-                                    </button>
-                                  </div>
-                                </div>
-                              ))}
+                                )
+                              })}
                           </div>
                         </div>
                       )}

@@ -11,6 +11,10 @@ export interface ContentData {
     ownerLocation: string;
     avatarUrl: string;
 
+    // Introduction (bilingual)
+    introduction_vi?: string;
+    introduction_en?: string;
+
     // Social Links
     socialLinks: {
         email: string;
@@ -27,11 +31,14 @@ export interface ContentData {
     // Experiences
     experiences: {
         id: number;
-        title: string;
+        title: string; // Vietnamese title (default)
+        title_en?: string; // English title
         company: string;
         period: string;
-        description: string;
-        responsibilities: string[];
+        description: string; // Vietnamese description (default)
+        description_en?: string; // English description
+        responsibilities: string[]; // Vietnamese responsibilities (default)
+        responsibilities_en?: string[]; // English responsibilities
         visible?: boolean;
     }[];
 
@@ -57,13 +64,17 @@ export interface ContentData {
     // Documents
     documents: {
         id: number;
-        title: string;
-        description: string;
+        title: string; // Vietnamese title (default)
+        title_en?: string; // English title
+        description: string; // Vietnamese description (default)
+        description_en?: string; // English description
         fileName: string;
         fileSize: string;
-        type: string;
+        type: string; // Vietnamese type (default)
+        type_en?: string; // English type
         category: string;
-        content: string;
+        content: string; // Vietnamese content (default)
+        content_en?: string; // English content
         googleDriveId: string;
     }[];
 
