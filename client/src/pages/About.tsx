@@ -222,7 +222,7 @@ export default function About() {
             <section className="mb-16">
               <h2 className="text-3xl font-bold text-foreground mb-8">{content.experience}</h2>
               <div className="space-y-8">
-                {siteContent.experiences.map((exp) => (
+                {siteContent.experiences.filter((exp: any) => exp.visible !== false).map((exp: any) => (
                   <div key={exp.id} className="border-l-2 border-accent pl-6">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
                       <h3 className="text-lg font-bold text-foreground">{exp.title}</h3>
