@@ -432,12 +432,45 @@ export default function Admin() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Địa chỉ</label>
+                  <label className="block text-sm font-medium mb-1">Địa chỉ (Tiếng Việt)</label>
                   <input
                     type="text"
                     value={content.ownerLocation}
                     onChange={(e) => updateContent({ ownerLocation: e.target.value })}
                     className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Địa chỉ (English)</label>
+                  <input
+                    type="text"
+                    value={content.ownerLocation_en || ''}
+                    onChange={(e) => updateContent({ ownerLocation_en: e.target.value })}
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                    placeholder="e.g., Ho Chi Minh City, Vietnam"
+                  />
+                </div>
+              </div>
+
+              {/* Introduction Section */}
+              <h3 className="text-lg font-bold mt-6 mb-3">Giới thiệu bản thân</h3>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Giới thiệu (Tiếng Việt)</label>
+                  <textarea
+                    value={content.introduction_vi || ''}
+                    onChange={(e) => updateContent({ introduction_vi: e.target.value })}
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-background h-32"
+                    placeholder="Viết giới thiệu về bản thân bằng tiếng Việt. Sử dụng 2 dòng trống để tách đoạn văn."
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Introduction (English)</label>
+                  <textarea
+                    value={content.introduction_en || ''}
+                    onChange={(e) => updateContent({ introduction_en: e.target.value })}
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-background h-32"
+                    placeholder="Write your introduction in English. Use 2 empty lines to separate paragraphs."
                   />
                 </div>
               </div>
