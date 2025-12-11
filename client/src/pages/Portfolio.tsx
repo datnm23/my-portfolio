@@ -160,7 +160,7 @@ export default function Portfolio() {
                           {project.year}
                         </span>
                       </div>
-                      <p className="text-sm text-muted-foreground">{project.location}</p>
+                      <p className="text-sm text-muted-foreground">{language === 'en' ? (project.location_en || project.location) : project.location}</p>
                     </div>
 
                     {/* Project Body */}

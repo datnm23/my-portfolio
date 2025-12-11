@@ -6,6 +6,7 @@ const STORAGE_KEY = 'portfolio_content';
 export interface ContentData {
     // Personal Info
     ownerName: string;
+    ownerName_en?: string;
     ownerEmail: string;
     ownerPhone: string;
     ownerLocation: string;

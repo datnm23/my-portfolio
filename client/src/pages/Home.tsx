@@ -41,7 +41,7 @@ export default function Home() {
       letsConnect: "Let's Connect",
       aboutMe: "About",
       aboutMeHighlight: "Me",
-      aboutDescription: "Recent business graduate passionate about marketing, travel, and design. I love creating campaigns that connect brands with their audiences in meaningful ways.",
+      aboutDescription: "Specialized in quantity surveying, bid preparation, and project settlement. With over 7 years of experience in infrastructure, civil, and industrial construction.",
       email: "Email",
       phone: "Phone",
       address: "Address",

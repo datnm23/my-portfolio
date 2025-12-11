@@ -405,12 +405,22 @@ export default function Admin() {
               <h2 className="text-xl font-bold mb-4">Thông tin cá nhân</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Họ tên</label>
+                  <label className="block text-sm font-medium mb-1">Họ tên (Tiếng Việt)</label>
                   <input
                     type="text"
                     value={content.ownerName}
                     onChange={(e) => updateContent({ ownerName: e.target.value })}
                     className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Name (English)</label>
+                  <input
+                    type="text"
+                    value={content.ownerName_en || ''}
+                    onChange={(e) => updateContent({ ownerName_en: e.target.value })}
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                    placeholder="e.g., Nguyen Van A"
                   />
                 </div>
                 <div>
@@ -673,14 +683,28 @@ export default function Admin() {
                         value={project.title}
                         onChange={(e) => handleUpdateProject(project.id, { title: e.target.value })}
                         className="w-full px-4 py-2 border border-border rounded-lg bg-background"
-                        placeholder="Tên dự án"
+                        placeholder="Tên dự án (VI)"
+                      />
+                      <input
+                        type="text"
+                        value={project.title_en || ''}
+                        onChange={(e) => handleUpdateProject(project.id, { title_en: e.target.value })}
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                        placeholder="Project Title (EN)"
                       />
                       <input
                         type="text"
                         value={project.location}
                         onChange={(e) => handleUpdateProject(project.id, { location: e.target.value })}
                         className="w-full px-4 py-2 border border-border rounded-lg bg-background"
-                        placeholder="Địa điểm"
+                        placeholder="Địa điểm (VI)"
+                      />
+                      <input
+                        type="text"
+                        value={project.location_en || ''}
+                        onChange={(e) => handleUpdateProject(project.id, { location_en: e.target.value })}
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                        placeholder="Location (EN)"
                       />
                       <input
                         type="text"
@@ -712,13 +736,28 @@ export default function Admin() {
                         ))}
                       </div>
                     </div>
-                    <textarea
-                      value={project.description}
-                      onChange={(e) => handleUpdateProject(project.id, { description: e.target.value })}
-                      className="w-full px-4 py-2 border border-border rounded-lg bg-background"
-                      placeholder="Mô tả"
-                      rows={2}
-                    />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Mô tả (VI)</label>
+                        <textarea
+                          value={project.description}
+                          onChange={(e) => handleUpdateProject(project.id, { description: e.target.value })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                          placeholder="Mô tả dự án"
+                          rows={2}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Description (EN)</label>
+                        <textarea
+                          value={project.description_en || ''}
+                          onChange={(e) => handleUpdateProject(project.id, { description_en: e.target.value })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                          placeholder="Project description"
+                          rows={2}
+                        />
+                      </div>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <input
                         type="text"

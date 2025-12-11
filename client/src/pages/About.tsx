@@ -137,7 +137,7 @@ export default function About() {
           {/* Header */}
           <div className="mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              {siteContent.ownerName}
+              {language === 'en' ? (siteContent.ownerName_en || siteContent.ownerName) : siteContent.ownerName}
             </h1>
             <p className="text-xl text-muted-foreground mb-6">
               {content.subtitle}

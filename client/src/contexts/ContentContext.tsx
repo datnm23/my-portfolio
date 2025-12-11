@@ -9,6 +9,7 @@ import {
 // Default content from const.ts
 const defaultContent: ContentData = {
     ownerName: OWNER_NAME,
+    ownerName_en: '',
     ownerEmail: OWNER_EMAIL,
     ownerPhone: OWNER_PHONE,
     ownerLocation: OWNER_LOCATION,
