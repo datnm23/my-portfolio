@@ -43,7 +43,7 @@ export async function fetchGistContent<T>(config: GistConfig): Promise<T | null>
     try {
         const response = await fetch(`${GIST_API_URL}/${config.gistId}`, {
             headers: {
-                'Authorization': `token ${config.token}`,
+                'Authorization': `Bearer ${config.token}`,
                 'Accept': 'application/vnd.github.v3+json',
             },
         });
@@ -74,7 +74,7 @@ export async function updateGistContent<T>(config: GistConfig, content: T): Prom
         const response = await fetch(`${GIST_API_URL}/${config.gistId}`, {
             method: 'PATCH',
             headers: {
-                'Authorization': `token ${config.token}`,
+                'Authorization': `Bearer ${config.token}`,
                 'Accept': 'application/vnd.github.v3+json',
                 'Content-Type': 'application/json',
             },
@@ -104,7 +104,7 @@ export async function testGistConnection(config: GistConfig): Promise<{ success:
     try {
         const response = await fetch(`${GIST_API_URL}/${config.gistId}`, {
             headers: {
-                'Authorization': `token ${config.token}`,
+                'Authorization': `Bearer ${config.token}`,
                 'Accept': 'application/vnd.github.v3+json',
             },
         });

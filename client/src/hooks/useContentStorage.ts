@@ -32,6 +32,7 @@ export interface ContentData {
         period: string;
         description: string;
         responsibilities: string[];
+        visible?: boolean;
     }[];
 
     // Projects
@@ -43,12 +44,14 @@ export interface ContentData {
         description: string;
         role_vi: string;
         role_en: string;
-        category: string;
+        category: string; // deprecated, kept for migration
+        categories: string[];
         responsibilities_vi: string[];
         responsibilities_en: string[];
         highlights_vi: string[];
         highlights_en: string[];
         visible: boolean;
+        documentIds?: number[]; // IDs of linked sample documents
     }[];
 
     // Documents
@@ -62,6 +65,15 @@ export interface ContentData {
         category: string;
         content: string;
         googleDriveId: string;
+    }[];
+
+    // Categories
+    categories: {
+        id: string;
+        name_vi: string;
+        name_en: string;
+        description_vi: string;
+        description_en: string;
     }[];
 }
 

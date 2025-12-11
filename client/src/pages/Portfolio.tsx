@@ -1,7 +1,5 @@
 import { Link } from "wouter";
 import { ArrowLeft, ExternalLink, Download, Moon, Sun } from "lucide-react";
-import { PORTFOLIO_CATEGORIES } from "@/const";
-import SampleDocuments from "@/components/SampleDocuments";
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -10,11 +8,20 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import PageLayout from "@/components/PageLayout";
 
 export default function Portfolio() {
-  const [activeCategory, setActiveCategory] = useState<string>("dutoan");
   const { language } = useLanguage();
   const { theme, toggleTheme, switchable } = useTheme();
   const { content: siteContent } = useContent();
-  const filteredProjects = siteContent.projects.filter(p => p.category === activeCategory && p.visible !== false);
+
+  // Initialize to first category if available, fallback to 'dutoan'
+  const firstCategoryId = (siteContent.categories || [])[0]?.id || "dutoan";
+  const [activeCategory, setActiveCategory] = useState<string>(firstCategoryId);
+
+  // Backwards compatibility: check both `categories` array and old `category` string
+  const filteredProjects = siteContent.projects.filter(p => {
+    const hasNewCategories = p.categories?.includes(activeCategory);
+    const hasOldCategory = (p as any).category === activeCategory;
+    return (hasNewCategories || hasOldCategory) && p.visible !== false;
+  });
 
   const translations = {
     vi: {
@@ -114,7 +121,7 @@ export default function Portfolio() {
         <section className="py-8 bg-background/80 backdrop-blur-sm sticky top-16 z-40 border-b border-border">
           <div className="container">
             <div className="flex flex-wrap gap-4">
-              {PORTFOLIO_CATEGORIES.map((category) => (
+              {(siteContent.categories || []).map((category: typeof siteContent.categories[0]) => (
                 <button
                   key={category.id}
                   onClick={() => setActiveCategory(category.id)}
@@ -130,16 +137,17 @@ export default function Portfolio() {
           </div>
         </section>
 
-        {/* Projects Grid */}
+        {/* Projects & Documents Grid */}
         <section className="py-16 md:py-24 mt-8">
           <div className="container">
             <h2 className="text-3xl font-bold mb-12">{t.projects}</h2>
 
-            {filteredProjects.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
+            {(filteredProjects.length > 0 || siteContent.documents.filter(d => d.category === activeCategory).length > 0) ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {/* Project Cards */}
                 {filteredProjects.map((project) => (
                   <div
-                    key={project.id}
+                    key={`project-${project.id}`}
                     className="group bg-background border-2 border-border rounded-lg overflow-hidden hover:border-accent hover:shadow-xl transition-all duration-300"
                   >
                     {/* Project Header */}
@@ -200,23 +208,71 @@ export default function Portfolio() {
                           </div>
                         </div>
                       )}
+
+                      {/* Linked Documents */}
+                      {project.documentIds && project.documentIds.length > 0 && (
+                        <div className="pt-4 border-t border-border">
+                          <p className="text-sm font-semibold text-muted-foreground mb-3">
+                            {language === "vi" ? "TÀI LIỆU MẪU" : "SAMPLE DOCUMENTS"}
+                          </p>
+                          <div className="space-y-2">
+                            {siteContent.documents
+                              .filter(doc => project.documentIds?.includes(doc.id))
+                              .map(doc => (
+                                <div key={doc.id} className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg border border-border">
+                                  <div className="flex items-center gap-3">
+                                    <div className="p-1.5 bg-accent/20 rounded">
+                                      <svg className="h-4 w-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                      </svg>
+                                    </div>
+                                    <div>
+                                      <p className="text-sm font-medium text-foreground">{doc.title}</p>
+                                      <p className="text-xs text-muted-foreground">{doc.type} • {doc.fileSize}</p>
+                                    </div>
+                                  </div>
+                                  <div className="flex gap-1">
+                                    <button
+                                      onClick={() => window.open(`https://docs.google.com/spreadsheets/d/${doc.googleDriveId}/edit?usp=sharing`, '_blank')}
+                                      className="p-2 hover:bg-accent/20 rounded-lg transition-colors"
+                                      title={language === "vi" ? "Xem trước" : "Preview"}
+                                    >
+                                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                      </svg>
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        const link = document.createElement("a");
+                                        link.href = `/${doc.fileName}`;
+                                        link.download = doc.fileName;
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        document.body.removeChild(link);
+                                      }}
+                                      className="p-2 hover:bg-accent/20 rounded-lg transition-colors"
+                                      title={language === "vi" ? "Tải xuống" : "Download"}
+                                    >
+                                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
+
               </div>
             ) : (
               <div className="text-center py-16">
                 <p className="text-lg text-muted-foreground">{t.noProjects}</p>
               </div>
             )}
-          </div>
-        </section>
-
-        {/* Sample Documents Section */}
-        <section className="py-16 md:py-24 bg-secondary/30">
-          <div className="container">
-            <h2 className="text-3xl font-bold mb-12">{t.sampleDocuments}</h2>
-            <SampleDocuments category={activeCategory} />
           </div>
         </section>
 

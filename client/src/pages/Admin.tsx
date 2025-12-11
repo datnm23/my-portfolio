@@ -1,14 +1,14 @@
 import { Link } from "wouter";
-import { ArrowLeft, Plus, Trash2, Edit2, Save, X, LogOut, RotateCcw, Cloud, CloudOff, RefreshCw, Check, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Edit2, Save, X, LogOut, RotateCcw, Cloud, CloudOff, RefreshCw, Check, AlertCircle, Eye, EyeOff, ChevronUp, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { OWNER_NAME, PORTFOLIO_CATEGORIES } from "@/const";
+import { OWNER_NAME } from "@/const";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useContent } from "@/contexts/ContentContext";
 import { toast } from "sonner";
 import { getGistConfig, saveGistConfig, clearGistConfig, testGistConnection, GistConfig } from "@/lib/gistApi";
 
-type TabType = "about" | "experiences" | "projects" | "documents" | "config";
+type TabType = "about" | "experiences" | "projects" | "documents" | "categories" | "config";
 
 export default function Admin() {
   const { isAuthenticated, password, setPassword, error, login, logout } = useAdminAuth();
@@ -130,6 +130,7 @@ export default function Admin() {
       period: "MM/YYYY - MM/YYYY",
       description: "Mô tả công việc",
       responsibilities: ["Nhiệm vụ 1"],
+      visible: true,
     };
     updateContent({ experiences: [...content.experiences, newExp] });
     setEditingExpId(newExp.id);
@@ -137,10 +138,31 @@ export default function Admin() {
     toast.success("Đã thêm kinh nghiệm!");
   };
 
+  const handleToggleExperienceVisibility = (id: number) => {
+    const exp = content.experiences.find(e => e.id === id);
+    if (exp) {
+      handleUpdateExperience(id, { visible: exp.visible === false ? true : false });
+      toast.success(exp.visible === false ? "Đã hiện kinh nghiệm!" : "Đã ẩn kinh nghiệm!");
+    }
+  };
+
   const handleUpdateExperience = (id: number, updates: Partial<typeof content.experiences[0]>) => {
     updateContent({
       experiences: content.experiences.map(e => e.id === id ? { ...e, ...updates } : e)
     });
+  };
+
+  const handleMoveExperience = (id: number, direction: 'up' | 'down') => {
+    const index = content.experiences.findIndex(e => e.id === id);
+    if (index === -1) return;
+
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= content.experiences.length) return;
+
+    const newExperiences = [...content.experiences];
+    [newExperiences[index], newExperiences[newIndex]] = [newExperiences[newIndex], newExperiences[index]];
+    updateContent({ experiences: newExperiences });
+    toast.success("Đã di chuyển kinh nghiệm!");
   };
 
   const handleDeleteExperience = (id: number) => {
@@ -160,12 +182,14 @@ export default function Admin() {
       description: "Mô tả dự án",
       role_vi: "Vai trò",
       role_en: "Role",
-      category: "dutoan",
+      category: "dutoan", // deprecated
+      categories: ["dutoan"],
       responsibilities_vi: ["Nhiệm vụ 1"],
       responsibilities_en: ["Task 1"],
       highlights_vi: ["Điểm nổi bật 1"],
       highlights_en: ["Highlight 1"],
       visible: true,
+      documentIds: [],
     };
     updateContent({ projects: [...content.projects, newProject] });
     setEditingProjectId(newProject.id);
@@ -223,6 +247,45 @@ export default function Admin() {
     if (confirm("Xóa tài liệu này?")) {
       updateContent({ documents: content.documents.filter(d => d.id !== id) });
       toast.success("Đã xóa tài liệu!");
+    }
+  };
+
+  // Category handlers
+  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
+
+  const handleAddCategory = () => {
+    const newId = `cat_${Date.now()}`;
+    const newCategory = {
+      id: newId,
+      name_vi: "Danh mục mới",
+      name_en: "New Category",
+      description_vi: "",
+      description_en: "",
+    };
+    updateContent({ categories: [...(content.categories || []), newCategory] });
+    setEditingCategoryId(newId);
+    toast.success("Đã thêm danh mục!");
+  };
+
+  const handleUpdateCategory = (id: string, updates: Partial<typeof content.categories[0]>) => {
+    updateContent({
+      categories: (content.categories || []).map((c: typeof content.categories[0]) => c.id === id ? { ...c, ...updates } : c)
+    });
+  };
+
+  const handleDeleteCategory = (id: string) => {
+    // Check if category is in use
+    const projectsUsingCategory = content.projects.filter((p: typeof content.projects[0]) => p.categories?.includes(id));
+    const docsUsingCategory = content.documents.filter((d: typeof content.documents[0]) => d.category === id);
+
+    if (projectsUsingCategory.length > 0 || docsUsingCategory.length > 0) {
+      toast.error(`Không thể xóa! Danh mục đang được sử dụng bởi ${projectsUsingCategory.length} dự án và ${docsUsingCategory.length} tài liệu.`);
+      return;
+    }
+
+    if (confirm("Xóa danh mục này?")) {
+      updateContent({ categories: (content.categories || []).filter((c: typeof content.categories[0]) => c.id !== id) });
+      toast.success("Đã xóa danh mục!");
     }
   };
 
@@ -315,6 +378,7 @@ export default function Admin() {
             { id: "experiences", label: "Kinh nghiệm" },
             { id: "projects", label: "Dự án" },
             { id: "documents", label: "Tài liệu" },
+            { id: "categories", label: "Danh mục" },
             { id: "config", label: "Cấu hình" },
           ].map(tab => (
             <button
@@ -441,8 +505,8 @@ export default function Admin() {
               </Button>
             </div>
 
-            {content.experiences.map((exp) => (
-              <div key={exp.id} className="bg-secondary p-6 rounded-lg border border-border">
+            {content.experiences.map((exp, index) => (
+              <div key={exp.id} className={`bg-secondary p-6 rounded-lg border border-border ${exp.visible === false ? 'opacity-50' : ''}`}>
                 {editingExpId === exp.id ? (
                   <div className="space-y-4">
                     <input
@@ -491,11 +555,42 @@ export default function Admin() {
                   <div>
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <h3 className="font-bold text-lg">{exp.title}</h3>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-bold text-lg">{exp.title}</h3>
+                          {exp.visible === false && (
+                            <span className="text-xs bg-yellow-500/20 text-yellow-600 px-2 py-0.5 rounded">Ẩn</span>
+                          )}
+                        </div>
                         <p className="text-accent">{exp.company}</p>
                         <p className="text-muted-foreground text-sm">{exp.period}</p>
                       </div>
                       <div className="flex gap-2">
+                        <Button
+                          onClick={() => handleMoveExperience(exp.id, 'up')}
+                          variant="outline"
+                          size="sm"
+                          disabled={index === 0}
+                          title="Di chuyển lên"
+                        >
+                          <ChevronUp className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          onClick={() => handleMoveExperience(exp.id, 'down')}
+                          variant="outline"
+                          size="sm"
+                          disabled={index === content.experiences.length - 1}
+                          title="Di chuyển xuống"
+                        >
+                          <ChevronDown className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          onClick={() => handleToggleExperienceVisibility(exp.id)}
+                          variant="outline"
+                          size="sm"
+                          title={exp.visible !== false ? "Ẩn kinh nghiệm" : "Hiện kinh nghiệm"}
+                        >
+                          {exp.visible !== false ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                        </Button>
                         <Button onClick={() => setEditingExpId(exp.id)} variant="outline" size="sm">
                           <Edit2 className="h-4 w-4" />
                         </Button>
@@ -552,15 +647,28 @@ export default function Admin() {
                         className="w-full px-4 py-2 border border-border rounded-lg bg-background"
                         placeholder="Năm"
                       />
-                      <select
-                        value={project.category}
-                        onChange={(e) => handleUpdateProject(project.id, { category: e.target.value })}
-                        className="w-full px-4 py-2 border border-border rounded-lg bg-background"
-                      >
-                        {PORTFOLIO_CATEGORIES.map(cat => (
-                          <option key={cat.id} value={cat.id}>{cat.name_vi}</option>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium">Danh mục (chọn nhiều)</label>
+                      <div className="flex flex-wrap gap-3">
+                        {(content.categories || []).map((cat: typeof content.categories[0]) => (
+                          <label key={cat.id} className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={project.categories?.includes(cat.id) || false}
+                              onChange={(e) => {
+                                const current = project.categories || [];
+                                const updated = e.target.checked
+                                  ? [...current, cat.id]
+                                  : current.filter((c: string) => c !== cat.id);
+                                handleUpdateProject(project.id, { categories: updated });
+                              }}
+                              className="w-4 h-4 rounded border-border"
+                            />
+                            <span className="text-sm">{cat.name_vi}</span>
+                          </label>
                         ))}
-                      </select>
+                      </div>
                     </div>
                     <textarea
                       value={project.description}
@@ -590,7 +698,7 @@ export default function Admin() {
                         <label className="block text-sm font-medium mb-1">Nhiệm vụ (VI) - mỗi dòng 1 nhiệm vụ</label>
                         <textarea
                           value={project.responsibilities_vi.join("\n")}
-                          onChange={(e) => handleUpdateProject(project.id, { responsibilities_vi: e.target.value.split("\n").filter(r => r.trim()) })}
+                          onChange={(e) => handleUpdateProject(project.id, { responsibilities_vi: e.target.value.split("\n") })}
                           className="w-full px-4 py-2 border border-border rounded-lg bg-background"
                           rows={4}
                           placeholder="Nhiệm vụ 1&#10;Nhiệm vụ 2"
@@ -600,7 +708,7 @@ export default function Admin() {
                         <label className="block text-sm font-medium mb-1">Responsibilities (EN)</label>
                         <textarea
                           value={project.responsibilities_en.join("\n")}
-                          onChange={(e) => handleUpdateProject(project.id, { responsibilities_en: e.target.value.split("\n").filter(r => r.trim()) })}
+                          onChange={(e) => handleUpdateProject(project.id, { responsibilities_en: e.target.value.split("\n") })}
                           className="w-full px-4 py-2 border border-border rounded-lg bg-background"
                           rows={4}
                           placeholder="Task 1&#10;Task 2"
@@ -612,7 +720,7 @@ export default function Admin() {
                         <label className="block text-sm font-medium mb-1">Điểm nổi bật (VI) - mỗi dòng 1 điểm</label>
                         <textarea
                           value={project.highlights_vi.join("\n")}
-                          onChange={(e) => handleUpdateProject(project.id, { highlights_vi: e.target.value.split("\n").filter(h => h.trim()) })}
+                          onChange={(e) => handleUpdateProject(project.id, { highlights_vi: e.target.value.split("\n") })}
                           className="w-full px-4 py-2 border border-border rounded-lg bg-background"
                           rows={4}
                           placeholder="Điểm nổi bật 1&#10;Điểm nổi bật 2"
@@ -622,13 +730,52 @@ export default function Admin() {
                         <label className="block text-sm font-medium mb-1">Highlights (EN)</label>
                         <textarea
                           value={project.highlights_en.join("\n")}
-                          onChange={(e) => handleUpdateProject(project.id, { highlights_en: e.target.value.split("\n").filter(h => h.trim()) })}
+                          onChange={(e) => handleUpdateProject(project.id, { highlights_en: e.target.value.split("\n") })}
                           className="w-full px-4 py-2 border border-border rounded-lg bg-background"
                           rows={4}
                           placeholder="Highlight 1&#10;Highlight 2"
                         />
                       </div>
                     </div>
+
+                    {/* Document Linking */}
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Tài liệu mẫu liên quan</label>
+                      <div className="flex flex-wrap gap-2 p-3 bg-background border border-border rounded-lg max-h-32 overflow-y-auto">
+                        {content.documents.length > 0 ? (
+                          content.documents.map((doc: any) => (
+                            <label
+                              key={doc.id}
+                              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border cursor-pointer transition-all ${(project.documentIds || []).includes(doc.id)
+                                ? 'bg-accent/20 border-accent text-accent'
+                                : 'bg-secondary border-border hover:border-accent/50'
+                                }`}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={(project.documentIds || []).includes(doc.id)}
+                                onChange={(e) => {
+                                  const currentIds = project.documentIds || [];
+                                  if (e.target.checked) {
+                                    handleUpdateProject(project.id, { documentIds: [...currentIds, doc.id] });
+                                  } else {
+                                    handleUpdateProject(project.id, { documentIds: currentIds.filter(id => id !== doc.id) });
+                                  }
+                                }}
+                                className="hidden"
+                              />
+                              <span className="text-sm">{doc.title}</span>
+                            </label>
+                          ))
+                        ) : (
+                          <p className="text-sm text-muted-foreground">Không có tài liệu nào trong danh mục này</p>
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Click để chọn/bỏ chọn tài liệu liên kết với dự án.
+                      </p>
+                    </div>
+
                     <Button onClick={() => setEditingProjectId(null)} size="sm">
                       <Save className="h-4 w-4 mr-2" />
                       Xong
@@ -645,9 +792,13 @@ export default function Admin() {
                           )}
                         </div>
                         <p className="text-accent">{project.location} • {project.year}</p>
-                        <span className="inline-block mt-1 px-2 py-1 bg-accent/10 text-accent text-xs rounded">
-                          {PORTFOLIO_CATEGORIES.find(c => c.id === project.category)?.name_vi || project.category}
-                        </span>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {(project.categories || []).map((catId: string) => (
+                            <span key={catId} className="inline-block px-2 py-1 bg-accent/10 text-accent text-xs rounded">
+                              {(content.categories || []).find((c: typeof content.categories[0]) => c.id === catId)?.name_vi || catId}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                       <div className="flex gap-2">
                         <Button
@@ -667,6 +818,34 @@ export default function Admin() {
                       </div>
                     </div>
                     <p className="text-muted-foreground">{project.description}</p>
+
+                    {/* Linked Documents Info */}
+                    {project.documentIds && project.documentIds.length > 0 && (
+                      <div className="mt-3 pt-3 border-t border-border">
+                        <p className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          Tài liệu liên kết ({project.documentIds.length}):
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {content.documents
+                            .filter((doc: any) => project.documentIds?.includes(doc.id))
+                            .map((doc: any) => (
+                              <span
+                                key={doc.id}
+                                className="inline-flex items-center gap-1 px-2 py-1 bg-accent/10 text-accent text-xs rounded-lg"
+                              >
+                                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                {doc.title}
+                              </span>
+                            ))
+                          }
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -703,38 +882,69 @@ export default function Admin() {
                       placeholder="Mô tả"
                       rows={2}
                     />
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <input
                         type="text"
                         value={doc.fileName}
                         onChange={(e) => handleUpdateDocument(doc.id, { fileName: e.target.value })}
                         className="w-full px-4 py-2 border border-border rounded-lg bg-background"
-                        placeholder="Tên file"
+                        placeholder="Tên file (vd: mau-dutoan.xlsx)"
                       />
                       <input
                         type="text"
                         value={doc.fileSize}
                         onChange={(e) => handleUpdateDocument(doc.id, { fileSize: e.target.value })}
                         className="w-full px-4 py-2 border border-border rounded-lg bg-background"
-                        placeholder="Kích thước"
+                        placeholder="Kích thước (vd: 150 KB)"
                       />
-                      <select
-                        value={doc.category}
-                        onChange={(e) => handleUpdateDocument(doc.id, { category: e.target.value })}
-                        className="w-full px-4 py-2 border border-border rounded-lg bg-background"
-                      >
-                        {PORTFOLIO_CATEGORIES.map(cat => (
-                          <option key={cat.id} value={cat.id}>{cat.name_vi}</option>
-                        ))}
-                      </select>
                     </div>
-                    <input
-                      type="text"
-                      value={doc.googleDriveId}
-                      onChange={(e) => handleUpdateDocument(doc.id, { googleDriveId: e.target.value })}
-                      className="w-full px-4 py-2 border border-border rounded-lg bg-background"
-                      placeholder="Google Drive ID"
-                    />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-1 text-muted-foreground">Danh mục</label>
+                        <select
+                          value={doc.category}
+                          onChange={(e) => handleUpdateDocument(doc.id, { category: e.target.value })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                        >
+                          {(content.categories || []).map((cat: typeof content.categories[0]) => (
+                            <option key={cat.id} value={cat.id}>{cat.name_vi}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1 text-muted-foreground">Loại tài liệu</label>
+                        <input
+                          type="text"
+                          value={doc.type}
+                          onChange={(e) => handleUpdateDocument(doc.id, { type: e.target.value })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                          placeholder="Loại (vd: Bảng tính, Hồ sơ, Mẫu)"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1 text-muted-foreground">Nội dung/Mô tả chi tiết</label>
+                      <textarea
+                        value={doc.content}
+                        onChange={(e) => handleUpdateDocument(doc.id, { content: e.target.value })}
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                        placeholder="Mô tả chi tiết về nội dung file"
+                        rows={2}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1 text-muted-foreground">Google Drive ID (để xem trước)</label>
+                      <input
+                        type="text"
+                        value={doc.googleDriveId}
+                        onChange={(e) => handleUpdateDocument(doc.id, { googleDriveId: e.target.value })}
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                        placeholder="ID từ link Google Drive/Sheets"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Lấy ID từ link: https://docs.google.com/spreadsheets/d/<strong>ID_Ở_ĐÂY</strong>/edit
+                      </p>
+                    </div>
                     <Button onClick={() => setEditingDocId(null)} size="sm">
                       <Save className="h-4 w-4 mr-2" />
                       Xong
@@ -744,8 +954,13 @@ export default function Admin() {
                   <div>
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <h3 className="font-bold text-lg">{doc.title}</h3>
-                        <p className="text-muted-foreground text-sm">{doc.fileName} • {doc.fileSize}</p>
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-bold text-lg">{doc.title}</h3>
+                          <span className="px-2 py-0.5 bg-accent/20 text-accent text-xs rounded">
+                            {(content.categories || []).find((c: typeof content.categories[0]) => c.id === doc.category)?.name_vi || doc.category}
+                          </span>
+                        </div>
+                        <p className="text-muted-foreground text-sm">{doc.fileName} • {doc.fileSize} • {doc.type}</p>
                       </div>
                       <div className="flex gap-2">
                         <Button onClick={() => setEditingDocId(doc.id)} variant="outline" size="sm">
@@ -757,10 +972,140 @@ export default function Admin() {
                       </div>
                     </div>
                     <p className="text-muted-foreground">{doc.description}</p>
+                    {doc.content && (
+                      <p className="text-sm text-foreground/70 mt-2 italic">Nội dung: {doc.content}</p>
+                    )}
                   </div>
                 )}
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Categories Tab */}
+        {activeTab === "categories" && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold">Quản lý danh mục</h2>
+              <Button onClick={handleAddCategory}>
+                <Plus className="h-4 w-4 mr-2" /> Thêm danh mục
+              </Button>
+            </div>
+
+            <div className="space-y-4">
+              {(content.categories || []).map((cat: typeof content.categories[0]) => (
+                <div key={cat.id} className="bg-secondary p-4 rounded-lg border border-border">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 space-y-3">
+                      {/* ID */}
+                      <div className="flex items-center gap-2">
+                        <label className="text-sm font-medium w-24 shrink-0">ID:</label>
+                        {editingCategoryId === cat.id ? (
+                          <input
+                            type="text"
+                            value={cat.id}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleUpdateCategory(cat.id, { id: e.target.value })}
+                            className="flex-1 px-2 py-1 rounded border border-border bg-background text-sm"
+                          />
+                        ) : (
+                          <code className="text-sm bg-background px-2 py-1 rounded">{cat.id}</code>
+                        )}
+                      </div>
+
+                      {/* Name VI */}
+                      <div className="flex items-center gap-2">
+                        <label className="text-sm font-medium w-24 shrink-0">Tên (VI):</label>
+                        {editingCategoryId === cat.id ? (
+                          <input
+                            type="text"
+                            value={cat.name_vi}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleUpdateCategory(cat.id, { name_vi: e.target.value })}
+                            className="flex-1 px-2 py-1 rounded border border-border bg-background text-sm"
+                          />
+                        ) : (
+                          <span className="text-sm">{cat.name_vi}</span>
+                        )}
+                      </div>
+
+                      {/* Name EN */}
+                      <div className="flex items-center gap-2">
+                        <label className="text-sm font-medium w-24 shrink-0">Tên (EN):</label>
+                        {editingCategoryId === cat.id ? (
+                          <input
+                            type="text"
+                            value={cat.name_en}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleUpdateCategory(cat.id, { name_en: e.target.value })}
+                            className="flex-1 px-2 py-1 rounded border border-border bg-background text-sm"
+                          />
+                        ) : (
+                          <span className="text-sm">{cat.name_en}</span>
+                        )}
+                      </div>
+
+                      {/* Description VI */}
+                      <div className="flex items-center gap-2">
+                        <label className="text-sm font-medium w-24 shrink-0">Mô tả (VI):</label>
+                        {editingCategoryId === cat.id ? (
+                          <input
+                            type="text"
+                            value={cat.description_vi || ""}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleUpdateCategory(cat.id, { description_vi: e.target.value })}
+                            className="flex-1 px-2 py-1 rounded border border-border bg-background text-sm"
+                          />
+                        ) : (
+                          <span className="text-sm text-muted-foreground">{cat.description_vi || "—"}</span>
+                        )}
+                      </div>
+
+                      {/* Description EN */}
+                      <div className="flex items-center gap-2">
+                        <label className="text-sm font-medium w-24 shrink-0">Mô tả (EN):</label>
+                        {editingCategoryId === cat.id ? (
+                          <input
+                            type="text"
+                            value={cat.description_en || ""}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleUpdateCategory(cat.id, { description_en: e.target.value })}
+                            className="flex-1 px-2 py-1 rounded border border-border bg-background text-sm"
+                          />
+                        ) : (
+                          <span className="text-sm text-muted-foreground">{cat.description_en || "—"}</span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex flex-col gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setEditingCategoryId(editingCategoryId === cat.id ? null : cat.id)}
+                      >
+                        {editingCategoryId === cat.id ? <Check className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeleteCategory(cat.id)}
+                        className="text-red-500 hover:text-red-600"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Usage info */}
+                  <div className="mt-3 pt-3 border-t border-border text-xs text-muted-foreground">
+                    Đang được sử dụng bởi: {content.projects.filter((p: typeof content.projects[0]) => p.categories?.includes(cat.id)).length} dự án, {content.documents.filter((d: typeof content.documents[0]) => d.category === cat.id).length} tài liệu
+                  </div>
+                </div>
+              ))}
+
+              {(!content.categories || content.categories.length === 0) && (
+                <div className="text-center py-8 text-muted-foreground">
+                  Chưa có danh mục nào. Nhấn "Thêm danh mục" để tạo mới.
+                </div>
+              )}
+            </div>
           </div>
         )}
 

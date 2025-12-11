@@ -158,7 +158,8 @@ export const PROJECTS = [
     description: "Hồ sơ dự thầu đầy đủ với bóc tách khối lượng chi tiết cho dự án khu dân cư",
     role_vi: "Kỹ sư Dự toán",
     role_en: "Cost Engineer",
-    category: "dutoan",
+    category: "dutoan", // deprecated
+    categories: ["dutoan"],
     responsibilities_vi: [
       "Bóc tách khối lượng công việc từ bản vẽ thiết kế",
       "Lập hồ sơ dự thầu chi tiết",
@@ -178,6 +179,7 @@ export const PROJECTS = [
       "Other construction items",
     ],
     visible: true,
+    documentIds: [1],
   },
   {
     id: 2,
@@ -187,7 +189,8 @@ export const PROJECTS = [
     description: "Hồ sơ gọi thầu cho hạng mục MEP (Mechanical, Electrical, Plumbing)",
     role_vi: "Kỹ sư Dự toán",
     role_en: "Cost Engineer",
-    category: "qs",
+    category: "qs", // deprecated
+    categories: ["qs"],
     responsibilities_vi: [
       "Chuẩn bị danh sách vật tư và nhân công",
       "Tính toán khối lượng chi tiết cho từng hạng mục MEP",
@@ -209,6 +212,7 @@ export const PROJECTS = [
       "Accurate labor calculations",
     ],
     visible: true,
+    documentIds: [2],
   },
   {
     id: 3,
@@ -218,7 +222,8 @@ export const PROJECTS = [
     description: "Hồ sơ thanh quyết toán đợt 2 cho dự án chung cư cao tầng",
     role_vi: "Kỹ sư Dự toán",
     role_en: "Cost Engineer",
-    category: "thanhquyettoan",
+    category: "thanhquyettoan", // deprecated
+    categories: ["thanhquyettoan"],
     responsibilities_vi: [
       "Kiểm tra khối lượng hoàn thành từ bản vẽ thiết kế",
       "Chuẩn bị bảng khối lượng chi tiết",
@@ -242,5 +247,6 @@ export const PROJECTS = [
       "Detailed quantity calculations",
     ],
     visible: true,
+    documentIds: [3],
   },
 ];

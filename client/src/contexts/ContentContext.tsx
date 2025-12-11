@@ -2,7 +2,8 @@ import { createContext, useContext, ReactNode } from 'react';
 import { useContentStorage, ContentData, SyncStatus } from '@/hooks/useContentStorage';
 import {
     OWNER_NAME, OWNER_EMAIL, OWNER_PHONE, OWNER_LOCATION,
-    SOCIAL_LINKS, SKILLS, SOFTWARE_SKILLS, EXPERIENCES, PROJECTS, SAMPLE_DOCUMENTS, AVATAR_URL
+    SOCIAL_LINKS, SKILLS, SOFTWARE_SKILLS, EXPERIENCES, PROJECTS, SAMPLE_DOCUMENTS, AVATAR_URL,
+    PORTFOLIO_CATEGORIES
 } from '@/const';
 
 // Default content from const.ts
@@ -18,6 +19,7 @@ const defaultContent: ContentData = {
     experiences: EXPERIENCES,
     projects: PROJECTS,
     documents: SAMPLE_DOCUMENTS,
+    categories: PORTFOLIO_CATEGORIES,
 };
 
 interface ContentContextType {
