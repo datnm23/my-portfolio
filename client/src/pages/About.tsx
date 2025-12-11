@@ -1,5 +1,5 @@
 import { ArrowLeft, Download, Moon, Sun } from "lucide-react";
-import { CV_FILE_PATH, SOFTWARE_SKILLS } from "@/const";
+import { CV_FILE_PATH } from "@/const";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useContent } from "@/contexts/ContentContext";
@@ -61,16 +61,8 @@ export default function About() {
 
   const content = translations[language];
 
-  // Skill ratings (1-5)
-  const skillRatings = [
-    { name: language === "vi" ? "Bóc tách khối lượng" : "Quantity Surveying", rating: 5 },
-    { name: language === "vi" ? "Lập hồ sơ dự thầu" : "Bid Preparation", rating: 5 },
-    { name: language === "vi" ? "Thanh quyết toán" : "Project Settlement", rating: 5 },
-    { name: language === "vi" ? "Quản lý dự án" : "Project Management", rating: 4 },
-    { name: language === "vi" ? "Microsoft Office" : "Microsoft Office", rating: 5 },
-    { name: language === "vi" ? "AutoCAD" : "AutoCAD", rating: 4 },
-    { name: language === "vi" ? "G8" : "G8", rating: 4 },
-  ];
+  // Use skills from siteContent (editable in Admin)
+  const skillRatings = siteContent.skills || [];
 
   const renderRatingBars = (rating: number) => {
     return (
@@ -209,7 +201,7 @@ export default function About() {
             <section className="mb-16">
               <h2 className="text-3xl font-bold text-foreground mb-8">{content.software}</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {SOFTWARE_SKILLS.map((software, index) => (
+                {(siteContent.softwareSkills || []).map((software: any, index: number) => (
                   <div key={index} className="bg-secondary p-4 rounded-lg border border-border text-center hover:bg-accent/10 transition-smooth">
                     <img src={`${import.meta.env.BASE_URL}${software.icon.replace(/^\//, '')}`} alt={software.name} className="w-12 h-12 mx-auto mb-2 object-contain" />
                     <p className="text-sm font-semibold text-foreground">{software.name}</p>
