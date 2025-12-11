@@ -9,6 +9,7 @@ export interface ContentData {
     ownerEmail: string;
     ownerPhone: string;
     ownerLocation: string;
+    ownerLocation_en?: string;
     avatarUrl: string;
 
     // Introduction (bilingual)

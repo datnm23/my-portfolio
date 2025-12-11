@@ -152,7 +152,7 @@ export default function About() {
                   {siteContent.ownerPhone}
                 </a>
                 <span className="text-muted-foreground">•</span>
-                <span className="text-muted-foreground">{siteContent.ownerLocation}</span>
+                <span className="text-muted-foreground">{language === 'en' ? (siteContent.ownerLocation_en || siteContent.ownerLocation) : siteContent.ownerLocation}</span>
               </div>
               <button
                 onClick={() => {

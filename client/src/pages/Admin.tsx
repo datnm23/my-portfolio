@@ -109,15 +109,19 @@ export default function Admin() {
 
   // Skills handlers
   const handleAddSkill = () => {
-    const skill = prompt("Nhập kỹ năng mới:");
-    if (skill) {
-      updateContent({ skills: [...content.skills, skill] });
+    const skillName = prompt("Nhập kỹ năng mới (Tiếng Việt):");
+    if (skillName) {
+      const skillNameEn = prompt("Nhập tên tiếng Anh (English name):") || skillName;
+      const ratingStr = prompt("Nhập điểm đánh giá (1-5):") || "4";
+      const rating = Math.min(5, Math.max(1, parseInt(ratingStr) || 4));
+      const newSkill = { name: skillName, name_en: skillNameEn, rating };
+      updateContent({ skills: [...content.skills, newSkill] });
       toast.success("Đã thêm kỹ năng!");
     }
   };
 
   const handleDeleteSkill = (index: number) => {
-    updateContent({ skills: content.skills.filter((_, i) => i !== index) });
+    updateContent({ skills: content.skills.filter((_: any, i: number) => i !== index) });
     toast.success("Đã xóa kỹ năng!");
   };
 
@@ -448,14 +452,19 @@ export default function Admin() {
                 </Button>
               </div>
               <div className="flex flex-wrap gap-2">
-                {content.skills.map((skill, index) => (
-                  <div key={index} className="flex items-center gap-2 bg-background px-3 py-1 rounded-full border border-border">
-                    <span>{skill}</span>
-                    <button onClick={() => handleDeleteSkill(index)} className="text-red-500 hover:text-red-600">
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
-                ))}
+                {content.skills.map((skill: any, index: number) => {
+                  const skillName = typeof skill === 'string' ? skill : (skill.name || '');
+                  const skillRating = typeof skill === 'object' ? (skill.rating || 4) : 4;
+                  return (
+                    <div key={index} className="flex items-center gap-2 bg-background px-3 py-1 rounded-full border border-border">
+                      <span>{skillName}</span>
+                      <span className="text-xs text-muted-foreground">({skillRating}/5)</span>
+                      <button onClick={() => handleDeleteSkill(index)} className="text-red-500 hover:text-red-600">
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
