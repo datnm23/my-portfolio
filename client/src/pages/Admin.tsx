@@ -107,15 +107,23 @@ export default function Admin() {
     }
   };
 
-  // Skills handlers
+  // Skills handlers - improved UI state
+  const [newSkillName, setNewSkillName] = useState("");
+  const [newSkillNameEn, setNewSkillNameEn] = useState("");
+  const [newSkillRating, setNewSkillRating] = useState(4);
+  const [editingSkillIndex, setEditingSkillIndex] = useState<number | null>(null);
+
   const handleAddSkill = () => {
-    const skillName = prompt("Nhập kỹ năng mới (Tiếng Việt):");
-    if (skillName) {
-      const skillNameEn = prompt("Nhập tên tiếng Anh (English name):") || skillName;
-      const ratingStr = prompt("Nhập điểm đánh giá (1-5):") || "4";
-      const rating = Math.min(5, Math.max(1, parseInt(ratingStr) || 4));
-      const newSkill = { name: skillName, name_en: skillNameEn, rating };
+    if (newSkillName.trim()) {
+      const newSkill = {
+        name: newSkillName.trim(),
+        name_en: newSkillNameEn.trim() || newSkillName.trim(),
+        rating: newSkillRating
+      };
       updateContent({ skills: [...content.skills, newSkill] });
+      setNewSkillName("");
+      setNewSkillNameEn("");
+      setNewSkillRating(4);
       toast.success("Đã thêm kỹ năng!");
     }
   };
@@ -123,6 +131,16 @@ export default function Admin() {
   const handleDeleteSkill = (index: number) => {
     updateContent({ skills: content.skills.filter((_: any, i: number) => i !== index) });
     toast.success("Đã xóa kỹ năng!");
+  };
+
+  const handleUpdateSkill = (index: number, field: string, value: string | number) => {
+    const updatedSkills = content.skills.map((skill: any, i: number) => {
+      if (i === index) {
+        return { ...skill, [field]: value };
+      }
+      return skill;
+    });
+    updateContent({ skills: updatedSkills });
   };
 
   // Experience handlers
@@ -487,27 +505,108 @@ export default function Admin() {
             </div>
 
             <div className="bg-secondary p-6 rounded-lg border border-border">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">Kỹ năng</h2>
-                <Button onClick={handleAddSkill} size="sm">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Thêm
-                </Button>
+              <h2 className="text-xl font-bold mb-4">Kỹ năng</h2>
+
+              {/* Add new skill form */}
+              <div className="bg-background p-4 rounded-lg border border-border mb-4">
+                <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Thêm kỹ năng mới</h3>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium mb-1">Tên (VI)</label>
+                    <input
+                      type="text"
+                      value={newSkillName}
+                      onChange={(e) => setNewSkillName(e.target.value)}
+                      placeholder="Nhập tên kỹ năng..."
+                      className="w-full px-3 py-2 border border-border rounded-lg bg-background text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium mb-1">Tên (EN)</label>
+                    <input
+                      type="text"
+                      value={newSkillNameEn}
+                      onChange={(e) => setNewSkillNameEn(e.target.value)}
+                      placeholder="English name..."
+                      className="w-full px-3 py-2 border border-border rounded-lg bg-background text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium mb-1">Đánh giá ({newSkillRating}/5)</label>
+                    <input
+                      type="range"
+                      min="1"
+                      max="5"
+                      value={newSkillRating}
+                      onChange={(e) => setNewSkillRating(parseInt(e.target.value))}
+                      className="w-full h-2 bg-border rounded-lg appearance-none cursor-pointer accent-accent"
+                    />
+                  </div>
+                  <div className="flex items-end">
+                    <Button onClick={handleAddSkill} size="sm" className="w-full" disabled={!newSkillName.trim()}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Thêm
+                    </Button>
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2">
+
+              {/* Skill list */}
+              <div className="space-y-2">
                 {content.skills.map((skill: any, index: number) => {
                   const skillName = typeof skill === 'string' ? skill : (skill.name || '');
+                  const skillNameEn = typeof skill === 'object' ? (skill.name_en || skillName) : skillName;
                   const skillRating = typeof skill === 'object' ? (skill.rating || 4) : 4;
+
                   return (
-                    <div key={index} className="flex items-center gap-2 bg-background px-3 py-1 rounded-full border border-border">
-                      <span>{skillName}</span>
-                      <span className="text-xs text-muted-foreground">({skillRating}/5)</span>
-                      <button onClick={() => handleDeleteSkill(index)} className="text-red-500 hover:text-red-600">
+                    <div key={index} className="flex items-center gap-3 bg-background p-3 rounded-lg border border-border">
+                      <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+                        <input
+                          type="text"
+                          value={skillName}
+                          onChange={(e) => handleUpdateSkill(index, 'name', e.target.value)}
+                          className="px-3 py-1.5 border border-border rounded bg-secondary text-sm"
+                          placeholder="Tên VI"
+                        />
+                        <input
+                          type="text"
+                          value={skillNameEn}
+                          onChange={(e) => handleUpdateSkill(index, 'name_en', e.target.value)}
+                          className="px-3 py-1.5 border border-border rounded bg-secondary text-sm"
+                          placeholder="Tên EN"
+                        />
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="range"
+                            min="1"
+                            max="5"
+                            value={skillRating}
+                            onChange={(e) => handleUpdateSkill(index, 'rating', parseInt(e.target.value))}
+                            className="flex-1 h-2 bg-border rounded-lg appearance-none cursor-pointer accent-accent"
+                          />
+                          <span className="text-sm font-semibold min-w-[2rem] text-center">{skillRating}/5</span>
+                        </div>
+                        <div className="flex gap-1">
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <div
+                              key={i}
+                              className={`h-2 flex-1 rounded-sm ${i < skillRating ? "bg-accent" : "bg-border"}`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteSkill(index)}
+                        className="text-red-500 hover:text-red-600 p-1.5 rounded hover:bg-red-100"
+                      >
                         <X className="h-4 w-4" />
                       </button>
                     </div>
                   );
                 })}
+                {content.skills.length === 0 && (
+                  <p className="text-sm text-muted-foreground text-center py-4">Chưa có kỹ năng nào. Thêm kỹ năng mới ở trên.</p>
+                )}
               </div>
             </div>
 
@@ -561,13 +660,25 @@ export default function Admin() {
               <div key={exp.id} className={`bg-secondary p-6 rounded-lg border border-border ${exp.visible === false ? 'opacity-50' : ''}`}>
                 {editingExpId === exp.id ? (
                   <div className="space-y-4">
-                    <input
-                      type="text"
-                      value={exp.title}
-                      onChange={(e) => handleUpdateExperience(exp.id, { title: e.target.value })}
-                      className="w-full px-4 py-2 border border-border rounded-lg bg-background font-bold"
-                      placeholder="Chức vụ (VI)"
-                    />
+                    {/* Title VI/EN */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <input
+                        type="text"
+                        value={exp.title}
+                        onChange={(e) => handleUpdateExperience(exp.id, { title: e.target.value })}
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background font-bold"
+                        placeholder="Chức vụ (VI)"
+                      />
+                      <input
+                        type="text"
+                        value={exp.title_en || ''}
+                        onChange={(e) => handleUpdateExperience(exp.id, { title_en: e.target.value })}
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background font-bold"
+                        placeholder="Position (EN)"
+                      />
+                    </div>
+
+                    {/* Company VI/EN */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <input
                         type="text"
@@ -584,6 +695,8 @@ export default function Admin() {
                         placeholder="Company (EN)"
                       />
                     </div>
+
+                    {/* Period */}
                     <input
                       type="text"
                       value={exp.period}
@@ -591,22 +704,55 @@ export default function Admin() {
                       className="w-full px-4 py-2 border border-border rounded-lg bg-background"
                       placeholder="Thời gian (VD: 01/2020 - 12/2022)"
                     />
-                    <textarea
-                      value={exp.description}
-                      onChange={(e) => handleUpdateExperience(exp.id, { description: e.target.value })}
-                      className="w-full px-4 py-2 border border-border rounded-lg bg-background"
-                      placeholder="Mô tả"
-                      rows={2}
-                    />
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Nhiệm vụ (mỗi dòng 1 nhiệm vụ)</label>
-                      <textarea
-                        value={exp.responsibilities.join("\n")}
-                        onChange={(e) => handleUpdateExperience(exp.id, { responsibilities: e.target.value.split("\n").filter(r => r.trim()) })}
-                        className="w-full px-4 py-2 border border-border rounded-lg bg-background"
-                        rows={4}
-                      />
+
+                    {/* Description VI/EN */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-medium mb-1 text-muted-foreground">Mô tả (VI)</label>
+                        <textarea
+                          value={exp.description}
+                          onChange={(e) => handleUpdateExperience(exp.id, { description: e.target.value })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                          placeholder="Mô tả công việc..."
+                          rows={2}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium mb-1 text-muted-foreground">Description (EN)</label>
+                        <textarea
+                          value={exp.description_en || ''}
+                          onChange={(e) => handleUpdateExperience(exp.id, { description_en: e.target.value })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                          placeholder="Job description..."
+                          rows={2}
+                        />
+                      </div>
                     </div>
+
+                    {/* Responsibilities VI/EN */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Nhiệm vụ (VI) - mỗi dòng 1 nhiệm vụ</label>
+                        <textarea
+                          value={exp.responsibilities.join("\n")}
+                          onChange={(e) => handleUpdateExperience(exp.id, { responsibilities: e.target.value.split("\n").filter((r: string) => r.trim()) })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                          rows={5}
+                          placeholder="- Nhiệm vụ 1&#10;- Nhiệm vụ 2"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Responsibilities (EN) - one per line</label>
+                        <textarea
+                          value={(exp.responsibilities_en || []).join("\n")}
+                          onChange={(e) => handleUpdateExperience(exp.id, { responsibilities_en: e.target.value.split("\n").filter((r: string) => r.trim()) })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                          rows={5}
+                          placeholder="- Responsibility 1&#10;- Responsibility 2"
+                        />
+                      </div>
+                    </div>
+
                     <Button onClick={() => setEditingExpId(null)} size="sm">
                       <Save className="h-4 w-4 mr-2" />
                       Xong
@@ -958,20 +1104,55 @@ export default function Admin() {
               <div key={doc.id} className="bg-secondary p-6 rounded-lg border border-border">
                 {editingDocId === doc.id ? (
                   <div className="space-y-4">
-                    <input
-                      type="text"
-                      value={doc.title}
-                      onChange={(e) => handleUpdateDocument(doc.id, { title: e.target.value })}
-                      className="w-full px-4 py-2 border border-border rounded-lg bg-background"
-                      placeholder="Tiêu đề"
-                    />
-                    <textarea
-                      value={doc.description}
-                      onChange={(e) => handleUpdateDocument(doc.id, { description: e.target.value })}
-                      className="w-full px-4 py-2 border border-border rounded-lg bg-background"
-                      placeholder="Mô tả"
-                      rows={2}
-                    />
+                    {/* Title VI/EN */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-medium mb-1 text-muted-foreground">Tiêu đề (VI)</label>
+                        <input
+                          type="text"
+                          value={doc.title}
+                          onChange={(e) => handleUpdateDocument(doc.id, { title: e.target.value })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                          placeholder="Tiêu đề tài liệu..."
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium mb-1 text-muted-foreground">Title (EN)</label>
+                        <input
+                          type="text"
+                          value={doc.title_en || ''}
+                          onChange={(e) => handleUpdateDocument(doc.id, { title_en: e.target.value })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                          placeholder="Document title..."
+                        />
+                      </div>
+                    </div>
+
+                    {/* Description VI/EN */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-medium mb-1 text-muted-foreground">Mô tả (VI)</label>
+                        <textarea
+                          value={doc.description}
+                          onChange={(e) => handleUpdateDocument(doc.id, { description: e.target.value })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                          placeholder="Mô tả tài liệu..."
+                          rows={2}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium mb-1 text-muted-foreground">Description (EN)</label>
+                        <textarea
+                          value={doc.description_en || ''}
+                          onChange={(e) => handleUpdateDocument(doc.id, { description_en: e.target.value })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                          placeholder="Document description..."
+                          rows={2}
+                        />
+                      </div>
+                    </div>
+
+                    {/* File info */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <input
                         type="text"
@@ -988,7 +1169,9 @@ export default function Admin() {
                         placeholder="Kích thước (vd: 150 KB)"
                       />
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                    {/* Category and Type */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
                         <label className="block text-sm font-medium mb-1 text-muted-foreground">Danh mục</label>
                         <select
@@ -1002,26 +1185,52 @@ export default function Admin() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-1 text-muted-foreground">Loại tài liệu</label>
+                        <label className="block text-sm font-medium mb-1 text-muted-foreground">Loại tài liệu (VI)</label>
                         <input
                           type="text"
                           value={doc.type}
                           onChange={(e) => handleUpdateDocument(doc.id, { type: e.target.value })}
                           className="w-full px-4 py-2 border border-border rounded-lg bg-background"
-                          placeholder="Loại (vd: Bảng tính, Hồ sơ, Mẫu)"
+                          placeholder="Bảng tính, Hồ sơ..."
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1 text-muted-foreground">Document Type (EN)</label>
+                        <input
+                          type="text"
+                          value={doc.type_en || ''}
+                          onChange={(e) => handleUpdateDocument(doc.id, { type_en: e.target.value })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                          placeholder="Spreadsheet, Doc..."
                         />
                       </div>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-1 text-muted-foreground">Nội dung/Mô tả chi tiết</label>
-                      <textarea
-                        value={doc.content}
-                        onChange={(e) => handleUpdateDocument(doc.id, { content: e.target.value })}
-                        className="w-full px-4 py-2 border border-border rounded-lg bg-background"
-                        placeholder="Mô tả chi tiết về nội dung file"
-                        rows={2}
-                      />
+
+                    {/* Content VI/EN */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-1 text-muted-foreground">Nội dung chi tiết (VI)</label>
+                        <textarea
+                          value={doc.content}
+                          onChange={(e) => handleUpdateDocument(doc.id, { content: e.target.value })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                          placeholder="Mô tả chi tiết về nội dung file"
+                          rows={2}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1 text-muted-foreground">Content Details (EN)</label>
+                        <textarea
+                          value={doc.content_en || ''}
+                          onChange={(e) => handleUpdateDocument(doc.id, { content_en: e.target.value })}
+                          className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                          placeholder="Detailed content description"
+                          rows={2}
+                        />
+                      </div>
                     </div>
+
+                    {/* Google Drive ID */}
                     <div>
                       <label className="block text-sm font-medium mb-1 text-muted-foreground">Google Drive ID (để xem trước)</label>
                       <input
@@ -1035,6 +1244,7 @@ export default function Admin() {
                         Lấy ID từ link: https://docs.google.com/spreadsheets/d/<strong>ID_Ở_ĐÂY</strong>/edit
                       </p>
                     </div>
+
                     <Button onClick={() => setEditingDocId(null)} size="sm">
                       <Save className="h-4 w-4 mr-2" />
                       Xong
