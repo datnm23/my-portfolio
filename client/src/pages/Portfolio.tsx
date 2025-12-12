@@ -222,22 +222,22 @@ export default function Portfolio() {
                                 const docTitle = language === 'en' ? (doc.title_en || doc.title) : doc.title;
                                 const docType = language === 'en' ? (doc.type_en || doc.type) : doc.type;
                                 return (
-                                  <div key={doc.id} className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg border border-border">
-                                    <div className="flex items-center gap-3">
-                                      <div className="p-1.5 bg-accent/20 rounded">
+                                  <div key={doc.id} className="flex items-center justify-between gap-3 p-3 bg-secondary/50 rounded-lg border border-border">
+                                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                                      <div className="p-1.5 bg-accent/20 rounded flex-shrink-0">
                                         <svg className="h-4 w-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                         </svg>
                                       </div>
-                                      <div>
-                                        <p className="text-sm font-medium text-foreground">{docTitle}</p>
+                                      <div className="min-w-0">
+                                        <p className="text-sm font-medium text-foreground truncate">{docTitle}</p>
                                         <p className="text-xs text-muted-foreground">{docType} • {doc.fileSize}</p>
                                       </div>
                                     </div>
-                                    <div className="flex gap-1">
+                                    <div className="flex gap-1 flex-shrink-0">
                                       <button
                                         onClick={() => window.open(`https://docs.google.com/spreadsheets/d/${doc.googleDriveId}/edit?usp=sharing`, '_blank')}
-                                        className="p-2 hover:bg-accent/20 rounded-lg transition-colors"
+                                        className="p-2 hover:bg-accent/20 rounded-lg transition-colors text-accent"
                                         title={language === "vi" ? "Xem trước" : "Preview"}
                                       >
                                         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -253,7 +253,7 @@ export default function Portfolio() {
                                           link.click();
                                           document.body.removeChild(link);
                                         }}
-                                        className="p-2 hover:bg-accent/20 rounded-lg transition-colors"
+                                        className="p-2 hover:bg-accent/20 rounded-lg transition-colors text-accent"
                                         title={language === "vi" ? "Tải xuống" : "Download"}
                                       >
                                         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
