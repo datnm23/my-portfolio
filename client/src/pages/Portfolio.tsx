@@ -148,7 +148,7 @@ export default function Portfolio() {
                 {filteredProjects.map((project) => (
                   <div
                     key={`project-${project.id}`}
-                    className="group bg-background border-2 border-border rounded-lg overflow-hidden hover:border-accent hover:shadow-xl transition-all duration-300"
+                    className="group flex flex-col bg-background border-2 border-border rounded-lg overflow-hidden hover:border-accent hover:shadow-xl transition-all duration-300 h-full"
                   >
                     {/* Project Header */}
                     <div className="p-6 border-b border-border bg-secondary/30">
@@ -164,7 +164,7 @@ export default function Portfolio() {
                     </div>
 
                     {/* Project Body */}
-                    <div className="p-6 space-y-4">
+                    <div className="p-6 space-y-4 flex-1">
                       <p className="text-foreground/80">{language === 'en' ? (project.description_en || project.description) : project.description}</p>
 
                       {/* Role */}
@@ -181,7 +181,7 @@ export default function Portfolio() {
                           {language === "vi" ? "NHIỆM VỤ CHÍNH" : "KEY RESPONSIBILITIES"}
                         </p>
                         <ul className="space-y-1 text-foreground/80">
-                          {(language === "vi" ? project.responsibilities_vi : project.responsibilities_en).map((resp, idx) => (
+                          {(language === "vi" ? project.responsibilities_vi : project.responsibilities_en).map((resp: string, idx: number) => (
                             <li key={idx} className="flex gap-2">
                               <span className="text-accent">•</span>
                               <span>{resp}</span>
@@ -197,7 +197,7 @@ export default function Portfolio() {
                             {language === "vi" ? "ĐIỂM NỔI BẬT" : "HIGHLIGHTS"}
                           </p>
                           <div className="flex flex-wrap gap-2">
-                            {(language === "vi" ? project.highlights_vi : project.highlights_en).map((highlight, idx) => (
+                            {(language === "vi" ? project.highlights_vi : project.highlights_en).map((highlight: string, idx: number) => (
                               <span
                                 key={idx}
                                 className="px-3 py-1 bg-secondary border border-border rounded-full text-xs text-foreground/80"
@@ -208,17 +208,19 @@ export default function Portfolio() {
                           </div>
                         </div>
                       )}
+                    </div>
 
-                      {/* Linked Documents */}
-                      {project.documentIds && project.documentIds.length > 0 && (
+                    {/* Linked Documents - Always at bottom */}
+                    {project.documentIds && project.documentIds.length > 0 && (
+                      <div className="px-6 pb-6 pt-0 mt-auto">
                         <div className="pt-4 border-t border-border">
                           <p className="text-sm font-semibold text-muted-foreground mb-3">
                             {language === "vi" ? "TÀI LIỆU MẪU" : "SAMPLE DOCUMENTS"}
                           </p>
                           <div className="space-y-2">
                             {siteContent.documents
-                              .filter(doc => project.documentIds?.includes(doc.id))
-                              .map(doc => {
+                              .filter((doc: { id: number }) => project.documentIds?.includes(doc.id))
+                              .map((doc: { id: number; title: string; title_en?: string; type: string; type_en?: string; fileSize: string; googleDriveId: string; fileName: string }) => {
                                 const docTitle = language === 'en' ? (doc.title_en || doc.title) : doc.title;
                                 const docType = language === 'en' ? (doc.type_en || doc.type) : doc.type;
                                 return (
@@ -266,8 +268,8 @@ export default function Portfolio() {
                               })}
                           </div>
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
                 ))}
 

@@ -19,7 +19,7 @@ export default function About() {
       contact: "Liên hệ",
       back: "Quay lại",
       downloadCV: "Tải CV",
-      title: "Kỹ sư Dự toán Xây dựng",
+      title: "Kỹ sư Dự toán",
       subtitle: "Chuyên gia Bóc tách khối lượng & Thanh quyết toán",
       introduction: "Giới thiệu",
       skills: "Kỹ năng chuyên môn",
@@ -39,7 +39,7 @@ export default function About() {
       contact: "Contact",
       back: "Back",
       downloadCV: "Download CV",
-      title: "Construction Cost Engineer",
+      title: "Cost Engineer",
       subtitle: "Quantity Surveying & Project Settlement Expert",
       introduction: "Introduction",
       skills: "Professional Skills",
@@ -271,14 +271,14 @@ export default function About() {
               <h2 className="text-3xl font-bold text-foreground mb-6">{content.education}</h2>
               <div className="border-l-2 border-accent pl-6">
                 <h3 className="text-lg font-bold text-foreground">
-                  {language === "vi" ? "Kỹ thuật xây dựng đường bộ và sân bay" : "Road and Airport Construction Engineering"}
+                  {language === "vi" ? "Kỹ thuật xây dựng công trình giao thông" : "Transportation Engineering"}
                 </h3>
                 <p className="text-accent font-semibold mb-2">
-                  {language === "vi" ? "Đại học Thủy Lợi" : "Thuyloi University"}
+                  {language === "vi" ? "Đại học Thủy Lợi" : "Thuy Loi University"}
                 </p>
                 <p className="text-sm text-muted-foreground mb-2">09/2012 - 03/2017</p>
                 <p className="text-muted-foreground">
-                  {language === "vi" ? "Tốt nghiệp loại Khá (Trên trung bình)" : "Graduated with Good Honors (Above Average)"}
+                  {language === "vi" ? "Tốt nghiệp loại Khá" : "Graduated with Good Honors"}
                 </p>
               </div>
             </section>
@@ -287,7 +287,7 @@ export default function About() {
 
         {/* Footer */}
         <footer className="py-8 bg-background border-t border-border text-center text-muted-foreground">
-          <p>© 2025 Nguyễn Mạnh Đạt. {content.allRightsReserved}</p>
+          <p>© 2025 Nguyen Manh Dat. {content.allRightsReserved}</p>
         </footer>
       </div>
     </PageLayout>

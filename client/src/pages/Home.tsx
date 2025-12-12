@@ -1,14 +1,16 @@
 import { Mail, Phone, MapPin, ArrowRight, Linkedin, Github, Facebook, Moon, Sun } from "lucide-react";
 import { Link } from "wouter";
-import { OWNER_NAME, OWNER_EMAIL, OWNER_PHONE, OWNER_LOCATION, SOCIAL_LINKS, AVATAR_URL } from "@/const";
+import { SOCIAL_LINKS, AVATAR_URL } from "@/const";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useContent } from "@/contexts/ContentContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import PageLayout from "@/components/PageLayout";
 
 export default function Home() {
   const { language } = useLanguage();
   const { theme, toggleTheme, switchable } = useTheme();
+  const { content: siteContent } = useContent();
 
   const translations = {
     vi: {
@@ -16,14 +18,10 @@ export default function Home() {
       about: "Giới thiệu",
       experiences: "Kinh nghiệm",
       contact: "Liên hệ",
-      title: "Kỹ sư Dự toán Xây dựng",
-      subtitle: "Chuyên gia Bóc tách khối lượng & Thanh quyết toán",
-      description: "Chuyên về bóc tách khối lượng, lập hồ sơ dự thầu, và thanh quyết toán công trình. Với hơn 7 năm kinh nghiệm trong lĩnh vực xây dựng cơ sở hạ tầng, dân dụng và công nghiệp.",
       viewWork: "Xem Portfolio",
       letsConnect: "Liên hệ ngay",
       aboutMe: "Giới thiệu",
       aboutMeHighlight: "về tôi",
-      aboutDescription: "Chuyên về bóc tách khối lượng, lập hồ sơ dự thầu, và thanh quyết toán công trình. Với hơn 7 năm kinh nghiệm trong lĩnh vực xây dựng cơ sở hạ tầng, dân dụng và công nghiệp.",
       email: "Email",
       phone: "Điện thoại",
       address: "Địa chỉ",
@@ -34,14 +32,10 @@ export default function Home() {
       about: "About",
       experiences: "Experiences",
       contact: "Contact",
-      title: "Construction Cost Engineer",
-      subtitle: "Quantity Surveying & Project Settlement Expert",
-      description: "Specialized in quantity surveying, bid preparation, and project settlement. With over 7 years of experience in infrastructure, civil, and industrial construction.",
       viewWork: "View My Work",
       letsConnect: "Let's Connect",
       aboutMe: "About",
       aboutMeHighlight: "Me",
-      aboutDescription: "Specialized in quantity surveying, bid preparation, and project settlement. With over 7 years of experience in infrastructure, civil, and industrial construction.",
       email: "Email",
       phone: "Phone",
       address: "Address",
@@ -59,7 +53,7 @@ export default function Home() {
           <div className="container py-4 flex items-center justify-between">
             <Link href="/">
               <a className="text-xl font-bold text-foreground hover:text-accent transition-smooth">
-                Nguyễn Mạnh Đạt
+                {language === 'en' ? (siteContent.ownerName_en || siteContent.ownerName) : siteContent.ownerName}
               </a>
             </Link>
             <div className="flex items-center gap-6">
@@ -98,13 +92,13 @@ export default function Home() {
               {/* Left Column - Text Content */}
               <div className="space-y-6 order-2 lg:order-1">
                 <h1 className="text-5xl md:text-6xl font-bold text-foreground leading-tight">
-                  Nguyễn Mạnh Đạt
+                  {language === 'en' ? (siteContent.ownerName_en || siteContent.ownerName) : siteContent.ownerName}
                 </h1>
                 <p className="text-2xl md:text-3xl font-semibold text-foreground">
-                  {t.title}
+                  {language === 'en' ? siteContent.jobTitle_en : siteContent.jobTitle_vi}
                 </p>
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  {t.description}
+                  {language === 'en' ? siteContent.jobSubtitle_en : siteContent.jobSubtitle_vi}
                 </p>
 
                 {/* Social Links */}
@@ -177,7 +171,7 @@ export default function Home() {
                   {/* Profile image */}
                   <img
                     src={AVATAR_URL}
-                    alt={OWNER_NAME}
+                    alt={siteContent.ownerName}
                     className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full object-cover border-4 border-accent/30 shadow-2xl"
                   />
                 </div>
@@ -194,7 +188,7 @@ export default function Home() {
                 {t.aboutMe} <span className="text-accent">{t.aboutMeHighlight}</span>
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                {t.aboutDescription}
+                {language === 'en' ? siteContent.introduction_en : siteContent.introduction_vi}
               </p>
             </div>
           </div>
@@ -210,8 +204,8 @@ export default function Home() {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">{t.email}</p>
-                  <a href={`mailto:${OWNER_EMAIL}`} className="font-semibold text-foreground hover:text-accent transition-smooth">
-                    {OWNER_EMAIL}
+                  <a href={`mailto:${siteContent.ownerEmail}`} className="font-semibold text-foreground hover:text-accent transition-smooth">
+                    {siteContent.ownerEmail}
                   </a>
                 </div>
               </div>
@@ -221,8 +215,8 @@ export default function Home() {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">{t.phone}</p>
-                  <a href={`tel:${OWNER_PHONE}`} className="font-semibold text-foreground hover:text-accent transition-smooth">
-                    {OWNER_PHONE}
+                  <a href={`tel:${siteContent.ownerPhone}`} className="font-semibold text-foreground hover:text-accent transition-smooth">
+                    {siteContent.ownerPhone}
                   </a>
                 </div>
               </div>
@@ -232,7 +226,9 @@ export default function Home() {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">{t.address}</p>
-                  <p className="font-semibold text-foreground">{OWNER_LOCATION}</p>
+                  <p className="font-semibold text-foreground">
+                    {language === 'en' ? (siteContent.ownerLocation_en || siteContent.ownerLocation) : siteContent.ownerLocation}
+                  </p>
                 </div>
               </div>
             </div>
@@ -241,7 +237,7 @@ export default function Home() {
 
         {/* Footer */}
         <footer className="py-8 bg-secondary/30 border-t border-border text-center text-muted-foreground">
-          <p className="text-sm">© 2025 Nguyễn Mạnh Đạt. {t.allRightsReserved}</p>
+          <p className="text-sm">© 2025 {siteContent.ownerName}. {t.allRightsReserved}</p>
         </footer>
       </div>
     </PageLayout>
