@@ -566,15 +566,24 @@ export default function Admin() {
                       value={exp.title}
                       onChange={(e) => handleUpdateExperience(exp.id, { title: e.target.value })}
                       className="w-full px-4 py-2 border border-border rounded-lg bg-background font-bold"
-                      placeholder="Chức vụ"
+                      placeholder="Chức vụ (VI)"
                     />
-                    <input
-                      type="text"
-                      value={exp.company}
-                      onChange={(e) => handleUpdateExperience(exp.id, { company: e.target.value })}
-                      className="w-full px-4 py-2 border border-border rounded-lg bg-background"
-                      placeholder="Công ty"
-                    />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <input
+                        type="text"
+                        value={exp.company}
+                        onChange={(e) => handleUpdateExperience(exp.id, { company: e.target.value })}
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                        placeholder="Công ty (VI)"
+                      />
+                      <input
+                        type="text"
+                        value={exp.company_en || ''}
+                        onChange={(e) => handleUpdateExperience(exp.id, { company_en: e.target.value })}
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background"
+                        placeholder="Company (EN)"
+                      />
+                    </div>
                     <input
                       type="text"
                       value={exp.period}

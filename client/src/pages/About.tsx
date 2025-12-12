@@ -238,6 +238,7 @@ export default function About() {
                 {siteContent.experiences.filter((exp: any) => exp.visible !== false).map((exp: any) => {
                   // Language-aware content
                   const expTitle = language === 'en' ? (exp.title_en || exp.title) : exp.title;
+                  const expCompany = language === 'en' ? (exp.company_en || exp.company) : exp.company;
                   const expDescription = language === 'en' ? (exp.description_en || exp.description) : exp.description;
                   const expResponsibilities = language === 'en'
                     ? (exp.responsibilities_en || exp.responsibilities)
@@ -249,7 +250,7 @@ export default function About() {
                         <h3 className="text-lg font-bold text-foreground">{expTitle}</h3>
                         <span className="text-sm text-muted-foreground">{exp.period}</span>
                       </div>
-                      <p className="text-accent font-semibold mb-2">{exp.company}</p>
+                      <p className="text-accent font-semibold mb-2">{expCompany}</p>
                       <p className="text-muted-foreground mb-3">{expDescription}</p>
                       <ul className="space-y-2">
                         {(expResponsibilities || []).map((resp: string, idx: number) => (

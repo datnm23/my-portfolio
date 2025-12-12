@@ -35,7 +35,8 @@ export interface ContentData {
         id: number;
         title: string; // Vietnamese title (default)
         title_en?: string; // English title
-        company: string;
+        company: string; // Vietnamese company name (default)
+        company_en?: string; // English company name
         period: string;
         description: string; // Vietnamese description (default)
         description_en?: string; // English description
@@ -47,10 +48,13 @@ export interface ContentData {
     // Projects
     projects: {
         id: number;
-        title: string;
-        location: string;
+        title: string; // Vietnamese title (default)
+        title_en?: string; // English title
+        location: string; // Vietnamese location (default)
+        location_en?: string; // English location
         year: string;
-        description: string;
+        description: string; // Vietnamese description (default)
+        description_en?: string; // English description
         role_vi: string;
         role_en: string;
         category: string; // deprecated, kept for migration
