@@ -33,7 +33,7 @@ export const SOFTWARE_SKILLS = [
   { name: "PowerPoint", icon: "/image/skills/powerpoint.svg" },
 ];
 
-export const AVATAR_URL = "https://drive.google.com/uc?export=view&id=1zcUytYQ6me6JxN0t-XfipfDUy8G0H2bg";
+export const AVATAR_URL = "https://lh3.googleusercontent.com/d/153qhCBA_Xa6DoLxfsoVaaKGwBZ36oDUP";
 
 export const NAVIGATION_ITEMS = [
   { label: "Trang chủ", href: "/" },

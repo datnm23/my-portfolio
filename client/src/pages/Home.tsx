@@ -173,6 +173,7 @@ export default function Home() {
                     src={AVATAR_URL}
                     alt={siteContent.ownerName}
                     className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full object-cover border-4 border-accent/30 shadow-2xl"
+                    style={{ objectPosition: 'center 30%' }}
                   />
                 </div>
               </div>
