@@ -33,7 +33,7 @@ export const SOFTWARE_SKILLS = [
   { name: "PowerPoint", icon: "/image/skills/powerpoint.svg" },
 ];
 
-export const AVATAR_URL = "https://placehold.co/200x200/E1E7EF/1F2937?text=Avatar";
+export const AVATAR_URL = "https://drive.google.com/file/d/1zcUytYQ6me6JxN0t-XfipfDUy8G0H2bg/view?usp=drive_link";
 
 export const NAVIGATION_ITEMS = [
   { label: "Trang chủ", href: "/" },
