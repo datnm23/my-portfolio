@@ -2,6 +2,7 @@ import { Download, FileText, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useContent } from "@/contexts/ContentContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { downloadFile, openGoogleDriveFile } from "@/lib/assets";
 
 interface SampleDocumentsProps {
   category?: string;
@@ -12,18 +13,21 @@ export default function SampleDocuments({ category = "dutoan" }: SampleDocuments
   const { language } = useLanguage();
 
   const handleDownload = (fileName: string) => {
-    const link = document.createElement("a");
-    link.href = `/${fileName}`;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    try {
+      downloadFile(fileName);
+    } catch (error) {
+      console.error("Error downloading file:", error);
+      alert("Không thể tải xuống file. Vui lòng thử lại sau.");
+    }
   };
 
   const handlePreview = (googleDriveId: string) => {
-    // Mở file trong Google Sheets Viewer từ Google Drive
-    const viewerUrl = `https://docs.google.com/spreadsheets/d/${googleDriveId}/edit?usp=sharing`;
-    window.open(viewerUrl, "_blank");
+    try {
+      openGoogleDriveFile(googleDriveId);
+    } catch (error) {
+      console.error("Error opening Google Drive preview:", error);
+      alert("Không thể mở xem trước. Vui lòng thử lại sau.");
+    }
   };
 
   const filteredDocuments = siteContent.documents.filter(doc => doc.category === category);

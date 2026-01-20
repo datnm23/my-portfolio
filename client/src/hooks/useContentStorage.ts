@@ -12,6 +12,7 @@ export interface ContentData {
     ownerLocation: string;
     ownerLocation_en?: string;
     avatarUrl: string;
+    cvPath?: string; // Path to CV file
 
     // Introduction (bilingual)
     introduction_vi?: string;

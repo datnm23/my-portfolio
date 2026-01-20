@@ -6,6 +6,7 @@ import { useContent } from "@/contexts/ContentContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import PageLayout from "@/components/PageLayout";
 import { Link } from "wouter";
+import { downloadFile } from "@/lib/assets";
 
 export default function About() {
   const { language } = useLanguage();
@@ -156,12 +157,13 @@ export default function About() {
               </div>
               <button
                 onClick={() => {
-                  const link = document.createElement("a");
-                  link.href = CV_FILE_PATH;
-                  link.download = "CV_Nguyen_Manh_Dat.pdf";
-                  document.body.appendChild(link);
-                  link.click();
-                  document.body.removeChild(link);
+                  try {
+                    const cvPath = siteContent.cvPath || "CV_Nguyen_Manh_Dat.pdf";
+                    downloadFile(cvPath);
+                  } catch (error) {
+                    console.error("Error downloading CV:", error);
+                    alert("Không thể tải CV. Vui lòng thử lại sau.");
+                  }
                 }}
                 className="w-fit px-6 py-2 bg-accent text-accent-foreground rounded-lg font-semibold hover:opacity-90 transition-smooth flex items-center gap-2"
               >

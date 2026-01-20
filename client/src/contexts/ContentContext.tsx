@@ -15,6 +15,7 @@ const defaultContent: ContentData = {
     ownerLocation: OWNER_LOCATION,
     ownerLocation_en: '',
     avatarUrl: AVATAR_URL,
+    cvPath: '/CV_Nguyen_Manh_Dat.pdf', // Default CV path
     introduction_vi: '',
     introduction_en: '',
     socialLinks: SOCIAL_LINKS,

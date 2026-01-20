@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { ArrowLeft, Plus, Trash2, Edit2, Save, X, LogOut, RotateCcw, Cloud, CloudOff, RefreshCw, Check, AlertCircle, Eye, EyeOff, ChevronUp, ChevronDown } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Edit2, Save, X, LogOut, RotateCcw, Cloud, CloudOff, RefreshCw, Check, AlertCircle, Eye, EyeOff, ChevronUp, ChevronDown, Upload, Download, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { OWNER_NAME } from "@/const";
@@ -8,7 +8,7 @@ import { useContent } from "@/contexts/ContentContext";
 import { toast } from "sonner";
 import { getGistConfig, saveGistConfig, clearGistConfig, testGistConnection, GistConfig } from "@/lib/gistApi";
 
-type TabType = "about" | "experiences" | "projects" | "documents" | "categories" | "config";
+type TabType = "about" | "experiences" | "projects" | "documents" | "categories" | "cv" | "config";
 
 export default function Admin() {
   const { isAuthenticated, password, setPassword, error, login, logout } = useAdminAuth();
@@ -30,6 +30,13 @@ export default function Admin() {
   const [showAddExp, setShowAddExp] = useState(false);
   const [showAddProject, setShowAddProject] = useState(false);
   const [showAddDoc, setShowAddDoc] = useState(false);
+
+  // CV management states
+  const [cvFile, setCvFile] = useState<File | null>(null);
+  const [cvUploading, setCvUploading] = useState(false);
+  const [cvExists, setCvExists] = useState(false);
+  const [cvSize, setCvSize] = useState("");
+  const [cvLastModified, setCvLastModified] = useState("");
 
   // Load Gist config on mount
   useEffect(() => {
@@ -401,6 +408,7 @@ export default function Admin() {
             { id: "projects", label: "Dự án" },
             { id: "documents", label: "Tài liệu" },
             { id: "categories", label: "Danh mục" },
+            { id: "cv", label: "Quản lý CV" },
             { id: "config", label: "Cấu hình" },
           ].map(tab => (
             <button
@@ -870,7 +878,7 @@ export default function Admin() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium">Danh mục (chọn nhiều)</label>
+                      <label className="block text-sm font-medium mb-1">Danh mục (chọn nhiều)</label>
                       <div className="flex flex-wrap gap-3">
                         {(content.categories || []).map((cat: typeof content.categories[0]) => (
                           <label key={cat.id} className="flex items-center gap-2 cursor-pointer">
@@ -1528,13 +1536,6 @@ export default function Admin() {
                 </div>
                 <div className="text-center p-4 bg-background rounded-lg">
                   <div className="text-3xl font-bold text-accent">{content.experiences.length}</div>
-                  <div className="text-sm text-muted-foreground">Kinh nghiệm</div>
-                </div>
-                <div className="text-center p-4 bg-background rounded-lg">
-                  <div className="text-3xl font-bold text-accent">{content.projects.length}</div>
-                  <div className="text-sm text-muted-foreground">Dự án</div>
-                </div>
-                <div className="text-center p-4 bg-background rounded-lg">
                   <div className="text-3xl font-bold text-accent">{content.documents.length}</div>
                   <div className="text-sm text-muted-foreground">Tài liệu</div>
                 </div>
