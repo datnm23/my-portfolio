@@ -9,7 +9,7 @@ export const OWNER_PHONE = "033 274 5275";
 export const OWNER_LOCATION = "Yên My, Yên Mo, Ninh Bình";
 
 // Analytics & Contact
-export const GOOGLE_ANALYTICS_ID = "G-XXXXXXXXXX"; // Replace with your GA ID
+export const GOOGLE_ANALYTICS_ID = ""; // Empty to disable GA
 export const CONTACT_EMAIL = "datnm1594@gmail.com"; // Email for form submissions
 export const CV_FILE_PATH = "/CV_Nguyen_Manh_Dat.pdf";
 export const FORMSPREE_ID = "example@formspree.io"; // Replace with your Formspree ID

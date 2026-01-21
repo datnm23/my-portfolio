@@ -3,8 +3,8 @@ import { GOOGLE_ANALYTICS_ID } from "@/const";
 
 export const useGoogleAnalytics = () => {
   useEffect(() => {
-    if (!GOOGLE_ANALYTICS_ID || GOOGLE_ANALYTICS_ID === "G-XXXXXXXXXX") {
-      console.warn("Google Analytics ID not configured. Please update GOOGLE_ANALYTICS_ID in const.ts");
+    if (!GOOGLE_ANALYTICS_ID || GOOGLE_ANALYTICS_ID === "G-XXXXXXXXXX" || GOOGLE_ANALYTICS_ID === "") {
+      // Silently return if GA is not configured
       return;
     }
 

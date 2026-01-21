@@ -20,6 +20,8 @@ export default function CvManager({
 }: CvManagerProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+  console.log('CvManager rendered with:', { currentCvPath, cvExists, uploading });
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {

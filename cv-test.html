@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Test Page</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            max-width: 800px; 
+            margin: 0 auto;
+        }
+        .section { 
+            margin: 20px 0; 
+            padding: 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px;
+        }
+        button { 
+            margin: 5px; 
+            padding: 10px 15px; 
+            cursor: pointer; 
+            border: 1px solid #ccc;
+            background: #f5f5f5;
+            border-radius: 3px;
+        }
+        button:hover {
+            background: #e5e5e5;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>CV Test Page</h1>
+    
+    <div class="section">
+        <h2>Kiểm tra CV File</h2>
+        <p>Test xem CV file có tồn tại và tải được không:</p>
+        
+        <button onclick="testCV()">Test CV</button>
+        <button onclick="downloadCV()">Download CV</button>
+        <button onclick="openCV()">Open CV</button>
+        
+        <div id="cv-result"></div>
+    </div>
+
+    <div class="section">
+        <h2>Upload Test</h2>
+        <p>Test upload functionality:</p>
+        
+        <input type="file" id="file-input" accept=".pdf" />
+        <button onclick="testUpload()">Test Upload</button>
+        
+        <div id="upload-result"></div>
+    </div>
+
+    <div class="section">
+        <h2>Debug Info</h2>
+        <div id="debug-info"></div>
+    </div>
+
+    <script>
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const p = document.createElement('p');
+            p.className = type;
+            p.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+            element.appendChild(p);
+        }
+
+        async function testCV() {
+            const cvPath = '/CV_Nguyen_Manh_Dat.pdf';
+            
+            try {
+                const response = await fetch(cvPath, { method: 'HEAD' });
+                
+                if (response.ok) {
+                    log('cv-result', `✅ CV file accessible - Status: ${response.status}`, 'success');
+                    log('cv-result', `📁 Content-Type: ${response.headers.get('content-type')}`, 'info');
+                    log('cv-result', `📏 Content-Length: ${response.headers.get('content-length')} bytes`, 'info');
+                } else {
+                    log('cv-result', `❌ CV file not accessible - Status: ${response.status} ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                log('cv-result', `❌ Error checking CV: ${error.message}`, 'error');
+            }
+        }
+
+        function downloadCV() {
+            const cvPath = '/CV_Nguyen_Manh_Dat.pdf';
+            
+            try {
+                const link = document.createElement('a');
+                link.href = cvPath;
+                link.download = 'CV_Nguyen_Manh_Dat.pdf';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                log('cv-result', '📥 Download initiated', 'success');
+            } catch (error) {
+                log('cv-result', `❌ Download error: ${error.message}`, 'error');
+            }
+        }
+
+        function openCV() {
+            const cvPath = '/CV_Nguyen_Manh_Dat.pdf';
+            
+            try {
+                window.open(cvPath, '_blank');
+                log('cv-result', '🔗 CV opened in new tab', 'success');
+            } catch (error) {
+                log('cv-result', `❌ Open error: ${error.message}`, 'error');
+            }
+        }
+
+        function testUpload() {
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                log('upload-result', '❌ No file selected', 'error');
+                return;
+            }
+            
+            if (file.type !== 'application/pdf') {
+                log('upload-result', '❌ File is not PDF', 'error');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                log('upload-result', '❌ File too large (>5MB)', 'error');
+                return;
+            }
+            
+            log('upload-result', `✅ File validation passed`, 'success');
+            log('upload-result', `📄 Name: ${file.name}`, 'info');
+            log('upload-result', `📏 Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`, 'info');
+            log('upload-result', `📋 Type: ${file.type}`, 'info');
+            
+            // Simulate upload
+            log('upload-result', '🔄 Simulating upload...', 'info');
+            setTimeout(() => {
+                log('upload-result', '✅ Upload simulation completed', 'success');
+            }, 2000);
+        }
+
+        // Show debug info
+        function showDebugInfo() {
+            const info = {
+                'Current URL': window.location.href,
+                'Protocol': window.location.protocol,
+                'Host': window.location.host,
+                'Pathname': window.location.pathname,
+                'User Agent': navigator.userAgent,
+                'Timestamp': new Date().toISOString()
+            };
+            
+            const debugElement = document.getElementById('debug-info');
+            debugElement.innerHTML = '';
+            
+            Object.entries(info).forEach(([key, value]) => {
+                const p = document.createElement('p');
+                p.innerHTML = `<strong>${key}:</strong> ${value}`;
+                debugElement.appendChild(p);
+            });
+        }
+
+        // Initialize
+        window.addEventListener('load', showDebugInfo);
+    </script>
+</body>
+</html>

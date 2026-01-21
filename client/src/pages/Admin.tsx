@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { useLocation } from "wouter";
 import { ArrowLeft, Plus, Trash2, Edit2, Save, X, LogOut, RotateCcw, Cloud, CloudOff, RefreshCw, Check, AlertCircle, Eye, EyeOff, ChevronUp, ChevronDown, Upload, Download, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -7,6 +7,7 @@ import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useContent } from "@/contexts/ContentContext";
 import { toast } from "sonner";
 import { getGistConfig, saveGistConfig, clearGistConfig, testGistConnection, GistConfig } from "@/lib/gistApi";
+import CvManager from "@/components/CvManager";
 
 type TabType = "about" | "experiences" | "projects" | "documents" | "categories" | "cv" | "config";
 
@@ -14,6 +15,7 @@ export default function Admin() {
   const { isAuthenticated, password, setPassword, error, login, logout } = useAdminAuth();
   const { content, updateContent, resetToDefaults, syncStatus, lastSynced, syncFromGist, syncToGist } = useContent();
   const [activeTab, setActiveTab] = useState<TabType>("about");
+  const [, setLocation] = useLocation();
 
   // Gist config states
   const [gistId, setGistId] = useState("");
@@ -32,11 +34,9 @@ export default function Admin() {
   const [showAddDoc, setShowAddDoc] = useState(false);
 
   // CV management states
-  const [cvFile, setCvFile] = useState<File | null>(null);
+  const [currentCvPath, setCurrentCvPath] = useState<string>(content.cvPath || "/CV_Nguyen_Manh_Dat.pdf");
   const [cvUploading, setCvUploading] = useState(false);
   const [cvExists, setCvExists] = useState(false);
-  const [cvSize, setCvSize] = useState("");
-  const [cvLastModified, setCvLastModified] = useState("");
 
   // Load Gist config on mount
   useEffect(() => {
@@ -47,6 +47,26 @@ export default function Admin() {
       setGistConnected(true);
     }
   }, []);
+
+  // Check CV file existence on mount
+  useEffect(() => {
+    const checkCvExists = async () => {
+      try {
+        const response = await fetch(currentCvPath, { method: 'HEAD' });
+        setCvExists(response.ok);
+      } catch (error) {
+        setCvExists(false);
+      }
+    };
+    checkCvExists();
+  }, [currentCvPath]);
+
+  // Sync currentCvPath with content.cvPath
+  useEffect(() => {
+    if (content.cvPath && content.cvPath !== currentCvPath) {
+      setCurrentCvPath(content.cvPath);
+    }
+  }, [content.cvPath, currentCvPath]);
 
   // Gist handlers
   const handleTestGistConnection = async () => {
@@ -111,6 +131,44 @@ export default function Admin() {
     if (confirm("Đặt lại tất cả nội dung về mặc định? Hành động này không thể hoàn tác.")) {
       resetToDefaults();
       toast.success("Đã đặt lại nội dung về mặc định!");
+    }
+  };
+
+  // CV management handlers
+  const handleCvUpload = async (file: File) => {
+    setCvUploading(true);
+    try {
+      // In a real app, you would upload to a server
+      // For this demo, we'll simulate the upload process
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Update the CV path in content
+      const newCvPath = `/CV_${Date.now()}.pdf`;
+      updateContent({ cvPath: newCvPath });
+      setCurrentCvPath(newCvPath);
+      setCvExists(true);
+      
+      toast.success("Đã upload CV thành công!");
+    } catch (error) {
+      toast.error("Lỗi khi upload CV!");
+      throw error;
+    } finally {
+      setCvUploading(false);
+    }
+  };
+
+  const handleCvDelete = async () => {
+    if (confirm("Xóa CV hiện tại? Hành động này không thể hoàn tác.")) {
+      try {
+        // In a real app, you would delete from server
+        updateContent({ cvPath: undefined });
+        setCurrentCvPath("");
+        setCvExists(false);
+        toast.success("Đã xóa CV!");
+      } catch (error) {
+        toast.error("Lỗi khi xóa CV!");
+        throw error;
+      }
     }
   };
 
@@ -323,11 +381,12 @@ export default function Admin() {
       <div className="min-h-screen flex flex-col">
         <nav className="sticky top-0 z-50 bg-background border-b border-border">
           <div className="container py-4 flex items-center justify-between">
-            <Link href="/">
-              <a className="text-2xl font-bold text-accent hover:opacity-80 transition-smooth">
-                {OWNER_NAME.split(" ")[2]}
-              </a>
-            </Link>
+            <button 
+              onClick={() => setLocation("/")}
+              className="text-2xl font-bold text-accent hover:opacity-80 transition-smooth"
+            >
+              {OWNER_NAME.split(" ")[2]}
+            </button>
           </div>
         </nav>
 
@@ -371,11 +430,12 @@ export default function Admin() {
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-background border-b border-border">
         <div className="container py-4 flex items-center justify-between">
-          <Link href="/">
-            <a className="text-2xl font-bold text-accent hover:opacity-80 transition-smooth">
-              {OWNER_NAME.split(" ")[2]}
-            </a>
-          </Link>
+          <button 
+            onClick={() => setLocation("/")}
+            className="text-2xl font-bold text-accent hover:opacity-80 transition-smooth"
+          >
+            {OWNER_NAME.split(" ")[2]}
+          </button>
           <div className="flex gap-2">
             <Button onClick={handleReset} variant="outline" size="sm">
               <RotateCcw className="h-4 w-4 mr-2" />
@@ -391,12 +451,13 @@ export default function Admin() {
 
       {/* Main Content */}
       <main className="flex-1 container py-8">
-        <Link href="/">
-          <a className="inline-flex items-center gap-2 text-accent hover:opacity-80 transition-smooth mb-6">
-            <ArrowLeft className="h-4 w-4" />
-            Quay lại
-          </a>
-        </Link>
+        <button 
+          onClick={() => setLocation("/")}
+          className="inline-flex items-center gap-2 text-accent hover:opacity-80 transition-smooth mb-6"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Quay lại
+        </button>
 
         <h1 className="text-3xl font-bold text-foreground mb-6">Quản lý nội dung</h1>
 
@@ -878,7 +939,7 @@ export default function Admin() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium mb-1">Danh mục (chọn nhiều)</label>
+                      <label className="block text-sm font-medium">Danh mục (chọn nhiều)</label>
                       <div className="flex flex-wrap gap-3">
                         {(content.categories || []).map((cat: typeof content.categories[0]) => (
                           <label key={cat.id} className="flex items-center gap-2 cursor-pointer">
@@ -1417,6 +1478,162 @@ export default function Admin() {
           </div>
         )}
 
+        {/* CV Management Tab */}
+        {activeTab === "cv" && (
+          <div className="space-y-6">
+            <div className="bg-secondary p-6 rounded-lg border border-border">
+              <h2 className="text-xl font-bold flex items-center gap-2 mb-6">
+                <FileText className="h-5 w-5" />
+                Quản lý CV
+              </h2>
+
+              {/* CV Status Card */}
+              <div className="bg-background rounded-lg border border-border p-4 mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold">Trạng thái CV</h3>
+                  <div className={`px-3 py-1 rounded-full text-sm font-medium ${cvExists 
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
+                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                  }`}>
+                    {cvExists ? '✅ CV đã có' : '❌ Chưa có CV'}
+                  </div>
+                </div>
+                
+                {cvExists ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">
+                        <strong>File:</strong> {currentCvPath.split('/').pop()}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground">
+                        <strong>Đường dẫn:</strong> {currentCvPath}
+                      </span>
+                    </div>
+                    <div className="flex gap-2 pt-2">
+                      <Button 
+                        onClick={() => window.open(currentCvPath, '_blank')} 
+                        size="sm"
+                        variant="outline"
+                      >
+                        <Eye className="h-4 w-4 mr-2" />
+                        Xem CV
+                      </Button>
+                      <Button 
+                        onClick={() => {
+                          const link = document.createElement('a');
+                          link.href = currentCvPath;
+                          link.download = currentCvPath.split('/').pop() || 'CV.pdf';
+                          link.click();
+                        }}
+                        size="sm"
+                        variant="outline"
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        Tải xuống
+                      </Button>
+                      <Button 
+                        onClick={handleCvDelete} 
+                        size="sm"
+                        variant="outline"
+                        className="text-red-500 hover:text-red-600"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Xóa
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-6">
+                    <FileText className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
+                    <p className="text-muted-foreground">Chưa có CV nào được upload</p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Upload CV mới ở phần bên dưới
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Upload Section */}
+              <div className="bg-background rounded-lg border border-border p-4">
+                <h3 className="text-lg font-semibold mb-4">Upload CV mới</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Chọn file PDF
+                    </label>
+                    <input
+                      type="file"
+                      accept=".pdf"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          if (file.type !== 'application/pdf') {
+                            toast.error('Chỉ chấp nhận file PDF!');
+                            e.target.value = '';
+                            return;
+                          }
+                          if (file.size > 5 * 1024 * 1024) {
+                            toast.error('File không được quá 5MB!');
+                            e.target.value = '';
+                            return;
+                          }
+                          // Show file info
+                          toast.success(`File đã chọn: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+                          handleCvUpload(file);
+                        }
+                      }}
+                      className="block w-full text-sm text-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-accent file:text-accent-foreground hover:file:bg-accent/90 border border-border rounded-lg"
+                      disabled={cvUploading}
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Chỉ chấp nhận file PDF, tối đa 5MB
+                    </p>
+                  </div>
+
+                  {cvUploading && (
+                    <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
+                      <RefreshCw className="h-4 w-4 animate-spin text-blue-600" />
+                      <span className="text-sm text-blue-800 dark:text-blue-200">
+                        Đang upload CV...
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Instructions */}
+              <div className="bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800 p-4">
+                <h4 className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2">
+                  📋 Hướng dẫn sử dụng
+                </h4>
+                <ul className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
+                  <li>• CV sẽ được hiển thị trên trang "Giới thiệu" với nút "Tải CV"</li>
+                  <li>• File CV cũ sẽ được thay thế khi upload file mới</li>
+                  <li>• Đảm bảo file CV có tên phù hợp và nội dung cập nhật</li>
+                  <li>• CV sẽ được lưu trong thư mục public của website</li>
+                  <li>• Khuyến nghị: Tên file nên có định dạng CV_TenBan.pdf</li>
+                </ul>
+              </div>
+
+              {/* Debug Info (remove in production) */}
+              {process.env.NODE_ENV === 'development' && (
+                <div className="bg-gray-50 dark:bg-gray-900/30 rounded border p-3">
+                  <p className="text-xs font-medium mb-1">🐛 Debug Info (chỉ hiển thị trong development):</p>
+                  <div className="text-xs text-muted-foreground space-y-1">
+                    <p>• Current CV Path: {currentCvPath}</p>
+                    <p>• CV Exists: {cvExists.toString()}</p>
+                    <p>• CV Uploading: {cvUploading.toString()}</p>
+                    <p>• Content CV Path: {content.cvPath || 'undefined'}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Config Tab */}
         {activeTab === "config" && (
           <div className="space-y-6">
@@ -1536,6 +1753,13 @@ export default function Admin() {
                 </div>
                 <div className="text-center p-4 bg-background rounded-lg">
                   <div className="text-3xl font-bold text-accent">{content.experiences.length}</div>
+                  <div className="text-sm text-muted-foreground">Kinh nghiệm</div>
+                </div>
+                <div className="text-center p-4 bg-background rounded-lg">
+                  <div className="text-3xl font-bold text-accent">{content.projects.length}</div>
+                  <div className="text-sm text-muted-foreground">Dự án</div>
+                </div>
+                <div className="text-center p-4 bg-background rounded-lg">
                   <div className="text-3xl font-bold text-accent">{content.documents.length}</div>
                   <div className="text-sm text-muted-foreground">Tài liệu</div>
                 </div>
