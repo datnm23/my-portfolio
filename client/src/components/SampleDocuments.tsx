@@ -12,9 +12,10 @@ export default function SampleDocuments({ category = "dutoan" }: SampleDocuments
   const { content: siteContent } = useContent();
   const { language } = useLanguage();
 
-  const handleDownload = (fileName: string) => {
+  const handleDownload = (fileName: string, googleDriveId?: string) => {
     try {
-      downloadFile(fileName);
+      // Google Drive is the default download method
+      downloadFile(fileName, googleDriveId);
     } catch (error) {
       console.error("Error downloading file:", error);
       alert("Không thể tải xuống file. Vui lòng thử lại sau.");
@@ -99,7 +100,7 @@ export default function SampleDocuments({ category = "dutoan" }: SampleDocuments
                       {t.preview}
                     </Button>
                     <Button
-                      onClick={() => handleDownload(doc.fileName)}
+                      onClick={() => handleDownload(doc.fileName, doc.googleDriveId)}
                       className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90"
                     >
                       <Download className="h-4 w-4 mr-2" />

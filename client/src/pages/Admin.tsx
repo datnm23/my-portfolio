@@ -138,17 +138,18 @@ export default function Admin() {
   const handleCvUpload = async (file: File) => {
     setCvUploading(true);
     try {
-      // In a real app, you would upload to a server
-      // For this demo, we'll simulate the upload process
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Note: For GitHub Pages (static site), file upload is not supported.
+      // The CV file must be placed in client/public/ folder manually
+      // or use an external URL (Google Drive, etc.)
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Update the CV path in content
-      const newCvPath = `/CV_${Date.now()}.pdf`;
-      updateContent({ cvPath: newCvPath });
-      setCurrentCvPath(newCvPath);
+      // Keep the default CV path (file must exist in public/ folder)
+      const defaultCvPath = `/CV_Nguyen_Manh_Dat.pdf`;
+      updateContent({ cvPath: defaultCvPath });
+      setCurrentCvPath(defaultCvPath);
       setCvExists(true);
       
-      toast.success("Đã upload CV thành công!");
+      toast.info("Lưu ý: Trên GitHub Pages, hãy đặt file CV vào thư mục public/ hoặc dùng link Google Drive bên dưới.");
     } catch (error) {
       toast.error("Lỗi khi upload CV!");
       throw error;

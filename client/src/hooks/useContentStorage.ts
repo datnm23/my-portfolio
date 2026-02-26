@@ -13,6 +13,7 @@ export interface ContentData {
     ownerLocation_en?: string;
     avatarUrl: string;
     cvPath?: string; // Path to CV file
+    cvUrl?: string; // External URL for CV (e.g., Google Drive link)
 
     // Introduction (bilingual)
     introduction_vi?: string;

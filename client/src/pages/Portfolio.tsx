@@ -248,12 +248,10 @@ export default function Portfolio() {
                                       </button>
                                       <button
                                         onClick={() => {
-                                          const link = document.createElement("a");
-                                          link.href = `/${doc.fileName}`;
-                                          link.download = doc.fileName;
-                                          document.body.appendChild(link);
-                                          link.click();
-                                          document.body.removeChild(link);
+                                          // Google Drive is the default download method
+                                          if (doc.googleDriveId) {
+                                            window.open(`https://drive.google.com/uc?id=${doc.googleDriveId}&export=download`, "_blank");
+                                          }
                                         }}
                                         className="p-2 hover:bg-accent/20 rounded-lg transition-colors text-accent"
                                         title={language === "vi" ? "Tải xuống" : "Download"}

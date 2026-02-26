@@ -158,8 +158,21 @@ export default function About() {
               <button
                 onClick={() => {
                   try {
-                    const cvPath = siteContent.cvPath || "CV_Nguyen_Manh_Dat.pdf";
-                    downloadFile(cvPath);
+                    // Priority: cvUrl (external link) > cvPath starting with http > local file
+                    const cvUrl = siteContent.cvUrl;
+                    const cvPath = siteContent.cvPath || "";
+                    const defaultCvFile = "CV_Nguyen_Manh_Dat.pdf";
+                    
+                    if (cvUrl) {
+                      // External URL (Google Drive, etc.)
+                      window.open(cvUrl, "_blank");
+                    } else if (cvPath.startsWith("http")) {
+                      // Full URL in cvPath
+                      window.open(cvPath, "_blank");
+                    } else {
+                      // Local file - always use the known default file to avoid broken generated paths
+                      downloadFile(defaultCvFile);
+                    }
                   } catch (error) {
                     console.error("Error downloading CV:", error);
                     alert("Không thể tải CV. Vui lòng thử lại sau.");

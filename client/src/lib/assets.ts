@@ -1,5 +1,6 @@
 /**
  * Utility functions for handling file paths and asset URLs
+ * DEFAULT: All downloads use Google Drive when googleDriveId is available
  */
 
 /**
@@ -25,45 +26,99 @@ export function getAssetUrl(path: string): string {
 }
 
 /**
- * Download a file from the public directory
- * @param fileName - The file name (e.g., "CV_Nguyen_Manh_Dat.pdf")
- * @param customName - Optional custom download name
+ * Get Google Drive download URL
  */
-export function downloadFile(fileName: string, customName?: string): void {
+export function getGoogleDriveDownloadUrl(googleDriveId: string): string {
+  return `https://drive.google.com/uc?id=${googleDriveId}&export=download`;
+}
+
+/**
+ * Get Google Drive view URL
+ */
+export function getGoogleDriveViewUrl(googleDriveId: string): string {
+  return `https://drive.google.com/file/d/${googleDriveId}/view?usp=sharing`;
+}
+
+/**
+ * Get Google Drive preview URL (for spreadsheets)
+ */
+export function getGoogleDrivePreviewUrl(googleDriveId: string): string {
+  return `https://docs.google.com/spreadsheets/d/${googleDriveId}/edit?usp=sharing`;
+}
+
+/**
+ * Download a file - Google Drive is the DEFAULT method
+ * @param fileName - The file name for display
+ * @param googleDriveId - Google Drive file ID (used by default)
+ */
+export function downloadFile(fileName: string, googleDriveId?: string): void {
   try {
-    const url = getAssetUrl(fileName);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = customName || fileName;
-    link.target = "_blank"; // Open in new tab to handle CORS issues
-    
-    // Temporarily add to DOM
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    console.log(`Download initiated: ${fileName} from ${url}`);
+    if (googleDriveId) {
+      // DEFAULT: Download from Google Drive
+      const downloadUrl = getGoogleDriveDownloadUrl(googleDriveId);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = fileName;
+      link.target = "_blank";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      console.log(`Google Drive download: ${fileName} (ID: ${googleDriveId})`);
+    } else {
+      // Fallback: local file (only if no Google Drive ID)
+      const url = getAssetUrl(fileName);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      link.target = "_blank";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      console.log(`Local download: ${fileName} from ${url}`);
+    }
   } catch (error) {
     console.error("Error downloading file:", error);
-    // Fallback: try to open in new tab
-    try {
-      const url = getAssetUrl(fileName);
-      window.open(url, "_blank");
-    } catch (fallbackError) {
-      console.error("Fallback failed:", fallbackError);
-      throw new Error(`Failed to download ${fileName}`);
+    if (googleDriveId) {
+      window.open(getGoogleDriveViewUrl(googleDriveId), "_blank");
     }
   }
 }
 
 /**
- * Open a file in a new tab
- * @param fileName - The file name
+ * Alias for backward compatibility
  */
-export function openFile(fileName: string): void {
+export function downloadGoogleDriveFile(googleDriveId: string, fileName?: string): void {
+  downloadFile(fileName || 'download', googleDriveId);
+}
+
+/**
+ * Open/preview a file - Google Drive is the DEFAULT method
+ * @param googleDriveId - Google Drive file ID
+ */
+export function openGoogleDriveFile(googleDriveId: string): void {
+  if (!googleDriveId) {
+    throw new Error("Google Drive ID is missing");
+  }
+  
   try {
-    const url = getAssetUrl(fileName);
-    window.open(url, "_blank");
+    window.open(getGoogleDrivePreviewUrl(googleDriveId), "_blank");
+  } catch (error) {
+    console.error("Error opening Google Drive file:", error);
+    throw error;
+  }
+}
+
+/**
+ * Open a file in a new tab
+ */
+export function openFile(fileName: string, googleDriveId?: string): void {
+  try {
+    if (googleDriveId) {
+      window.open(getGoogleDriveViewUrl(googleDriveId), "_blank");
+    } else {
+      const url = getAssetUrl(fileName);
+      window.open(url, "_blank");
+    }
   } catch (error) {
     console.error("Error opening file:", error);
     throw error;
@@ -72,8 +127,6 @@ export function openFile(fileName: string): void {
 
 /**
  * Check if a file exists and is accessible
- * @param fileName - The file name to check
- * @returns Promise that resolves to true if accessible, false otherwise
  */
 export async function checkFileExists(fileName: string): Promise<boolean> {
   try {
@@ -87,9 +140,7 @@ export async function checkFileExists(fileName: string): Promise<boolean> {
 }
 
 /**
- * Get Google Drive preview URLs for different formats
- * @param googleDriveId - The Google Drive file ID
- * @returns Array of possible preview URLs
+ * Get Google Drive URLs for different formats (legacy helper)
  */
 export function getGoogleDriveUrls(googleDriveId: string): string[] {
   if (!googleDriveId) {
@@ -97,36 +148,9 @@ export function getGoogleDriveUrls(googleDriveId: string): string[] {
   }
   
   return [
-    `https://docs.google.com/spreadsheets/d/${googleDriveId}/edit?usp=sharing`,
-    `https://drive.google.com/file/d/${googleDriveId}/view?usp=sharing`,
-    `https://docs.google.com/viewer?url=https://drive.google.com/uc?id=${googleDriveId}&export=download`,
-    `https://drive.google.com/uc?id=${googleDriveId}&export=download`
+    getGoogleDrivePreviewUrl(googleDriveId),
+    getGoogleDriveViewUrl(googleDriveId),
+    `https://docs.google.com/viewer?url=${getGoogleDriveDownloadUrl(googleDriveId)}`,
+    getGoogleDriveDownloadUrl(googleDriveId)
   ];
-}
-
-/**
- * Open Google Drive file with fallback options
- * @param googleDriveId - The Google Drive file ID
- */
-export function openGoogleDriveFile(googleDriveId: string): void {
-  if (!googleDriveId) {
-    throw new Error("Google Drive ID is missing");
-  }
-  
-  try {
-    const urls = getGoogleDriveUrls(googleDriveId);
-    
-    // Try the first URL (spreadsheet edit link)
-    window.open(urls[0], "_blank");
-    
-    // Log all possible URLs for debugging
-    console.log("Google Drive URLs for ID:", googleDriveId);
-    urls.forEach((url, index) => {
-      console.log(`URL ${index + 1}:`, url);
-    });
-    
-  } catch (error) {
-    console.error("Error opening Google Drive file:", error);
-    throw error;
-  }
 }

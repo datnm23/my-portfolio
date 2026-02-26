@@ -12,8 +12,11 @@ export const OWNER_LOCATION = "Yên My, Yên Mo, Ninh Bình";
 export const GOOGLE_ANALYTICS_ID = ""; // Empty to disable GA
 export const CONTACT_EMAIL = "datnm1594@gmail.com"; // Email for form submissions
 export const CV_FILE_PATH = "/CV_Nguyen_Manh_Dat.pdf";
+export const CV_GOOGLE_DRIVE_ID = "1B_Zc13StfTMwM1eaXVlSI3vLZGYIZtW7";
+export const CV_GOOGLE_DRIVE_URL = `https://drive.google.com/file/d/1B_Zc13StfTMwM1eaXVlSI3vLZGYIZtW7/view?usp=sharing`;
 export const FORMSPREE_ID = "example@formspree.io"; // Replace with your Formspree ID
-export const ADMIN_PASSWORD = "admin123"; // Replace with your password
+// ADMIN_PASSWORD: moved to environment variable for security
+// Set VITE_ADMIN_PASSWORD in .env.local file (not committed to git)
 
 export const SOCIAL_LINKS = {
   email: "datnm1594@gmail.com",

@@ -3,7 +3,7 @@ import { useContentStorage, ContentData, SyncStatus } from '@/hooks/useContentSt
 import {
     OWNER_NAME, OWNER_EMAIL, OWNER_PHONE, OWNER_LOCATION,
     SOCIAL_LINKS, SKILLS, SOFTWARE_SKILLS, EXPERIENCES, PROJECTS, SAMPLE_DOCUMENTS, AVATAR_URL,
-    PORTFOLIO_CATEGORIES
+    PORTFOLIO_CATEGORIES, CV_GOOGLE_DRIVE_URL
 } from '@/const';
 
 // Default content from const.ts
@@ -16,6 +16,7 @@ const defaultContent: ContentData = {
     ownerLocation_en: '',
     avatarUrl: AVATAR_URL,
     cvPath: '/CV_Nguyen_Manh_Dat.pdf', // Default CV path
+    cvUrl: CV_GOOGLE_DRIVE_URL, // Google Drive CV link - takes priority over cvPath
     introduction_vi: '',
     introduction_en: '',
     socialLinks: SOCIAL_LINKS,
