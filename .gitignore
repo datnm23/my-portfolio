@@ -106,4 +106,4 @@ temp/
 *.sqlite3
 
 temp_test/
-data/*.json (nếu là dữ liệu nhạy cảm hoặc local)
+data/*.json
