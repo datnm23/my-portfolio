@@ -51,25 +51,15 @@ export default function Home() {
         {/* Navigation */}
         <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/50">
           <div className="container py-4 flex items-center justify-between">
-            <Link href="/">
-              <a className="text-xl font-bold text-foreground hover:text-accent transition-smooth">
-                {language === 'en' ? (siteContent.ownerName_en || siteContent.ownerName) : siteContent.ownerName}
-              </a>
+            <Link href="/" className="text-xl font-bold text-foreground hover:text-accent transition-smooth">
+              {language === 'en' ? (siteContent.ownerName_en || siteContent.ownerName) : siteContent.ownerName}
             </Link>
             <div className="flex items-center gap-6">
               <div className="hidden md:flex gap-6">
-                <Link href="/">
-                  <a className="text-sm font-medium text-accent hover:text-accent/80 transition-smooth">{t.home}</a>
-                </Link>
-                <Link href="/about">
-                  <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{t.about}</a>
-                </Link>
-                <Link href="/portfolio">
-                  <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{t.experiences}</a>
-                </Link>
-                <Link href="/contact">
-                  <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{t.contact}</a>
-                </Link>
+                <Link href="/" className="text-sm font-medium text-accent hover:text-accent/80 transition-smooth">{t.home}</Link>
+                <Link href="/about" className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{t.about}</Link>
+                <Link href="/portfolio" className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{t.experiences}</Link>
+                <Link href="/contact" className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{t.contact}</Link>
               </div>
               {switchable && toggleTheme && (
                 <button
@@ -149,16 +139,12 @@ export default function Home() {
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                  <Link href="/portfolio">
-                    <a className="min-h-[48px] px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:opacity-90 transition-smooth flex items-center justify-center gap-2">
-                      {t.viewWork}
-                      <ArrowRight size={18} />
-                    </a>
+                  <Link href="/portfolio" className="min-h-[48px] px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:opacity-90 transition-smooth flex items-center justify-center gap-2">
+                    {t.viewWork}
+                    <ArrowRight size={18} />
                   </Link>
-                  <Link href="/contact">
-                    <a className="min-h-[48px] px-6 py-3 border-2 border-primary text-primary rounded-lg font-semibold hover:bg-primary/5 transition-smooth flex items-center justify-center">
-                      {t.letsConnect}
-                    </a>
+                  <Link href="/contact" className="min-h-[48px] px-6 py-3 border-2 border-primary text-primary rounded-lg font-semibold hover:bg-primary/5 transition-smooth flex items-center justify-center">
+                    {t.letsConnect}
                   </Link>
                 </div>
               </div>

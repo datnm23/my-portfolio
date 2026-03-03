@@ -60,29 +60,19 @@ export default function Portfolio() {
         {/* Navigation */}
         <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/50">
           <div className="container py-4 flex items-center justify-between">
-            <Link href="/">
-              <a className="text-xl font-bold text-foreground hover:text-accent transition-smooth">
-                Nguyễn Mạnh Đạt
-              </a>
+            <Link href="/" className="text-xl font-bold text-foreground hover:text-accent transition-smooth">
+              Nguyễn Mạnh Đạt
             </Link>
             <div className="flex items-center gap-6">
               <div className="hidden md:flex gap-6">
-                <Link href="/">
-                  <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
-                    {language === "vi" ? "Trang chủ" : "Home"}
-                  </a>
+                <Link href="/" className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
+                  {language === "vi" ? "Trang chủ" : "Home"}
                 </Link>
-                <Link href="/about">
-                  <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{t.about}</a>
+                <Link href="/about" className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{t.about}</Link>
+                <Link href="/portfolio" className="text-sm font-medium text-accent hover:text-accent/80 transition-smooth">
+                  {language === "vi" ? "Kinh nghiệm" : "Experiences"}
                 </Link>
-                <Link href="/portfolio">
-                  <a className="text-sm font-medium text-accent hover:text-accent/80 transition-smooth">
-                    {language === "vi" ? "Kinh nghiệm" : "Experiences"}
-                  </a>
-                </Link>
-                <Link href="/contact">
-                  <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{t.contact}</a>
-                </Link>
+                <Link href="/contact" className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{t.contact}</Link>
               </div>
               {switchable && toggleTheme && (
                 <button
@@ -102,10 +92,8 @@ export default function Portfolio() {
         <section className="py-16 md:py-24 bg-gradient-to-br from-accent/5 to-background">
           <div className="container">
             <div className="flex items-center gap-4 mb-8">
-              <Link href="/">
-                <a className="p-2 hover:bg-secondary rounded-lg transition-smooth">
-                  <ArrowLeft size={24} className="text-accent" />
-                </a>
+              <Link href="/" className="p-2 hover:bg-secondary rounded-lg transition-smooth">
+                <ArrowLeft size={24} className="text-accent" />
               </Link>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground">{t.portfolio}</h1>
             </div>

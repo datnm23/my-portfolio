@@ -7,7 +7,6 @@ import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useContent } from "@/contexts/ContentContext";
 import { toast } from "sonner";
 import { getGistConfig, saveGistConfig, clearGistConfig, testGistConnection, GistConfig } from "@/lib/gistApi";
-import CvManager from "@/components/CvManager";
 
 type TabType = "about" | "experiences" | "projects" | "documents" | "categories" | "cv" | "config";
 
@@ -33,11 +32,6 @@ export default function Admin() {
   const [showAddProject, setShowAddProject] = useState(false);
   const [showAddDoc, setShowAddDoc] = useState(false);
 
-  // CV management states
-  const [currentCvPath, setCurrentCvPath] = useState<string>(content.cvPath || "/CV_Nguyen_Manh_Dat.pdf");
-  const [cvUploading, setCvUploading] = useState(false);
-  const [cvExists, setCvExists] = useState(false);
-
   // Load Gist config on mount
   useEffect(() => {
     const config = getGistConfig();
@@ -47,26 +41,6 @@ export default function Admin() {
       setGistConnected(true);
     }
   }, []);
-
-  // Check CV file existence on mount
-  useEffect(() => {
-    const checkCvExists = async () => {
-      try {
-        const response = await fetch(currentCvPath, { method: 'HEAD' });
-        setCvExists(response.ok);
-      } catch (error) {
-        setCvExists(false);
-      }
-    };
-    checkCvExists();
-  }, [currentCvPath]);
-
-  // Sync currentCvPath with content.cvPath
-  useEffect(() => {
-    if (content.cvPath && content.cvPath !== currentCvPath) {
-      setCurrentCvPath(content.cvPath);
-    }
-  }, [content.cvPath, currentCvPath]);
 
   // Gist handlers
   const handleTestGistConnection = async () => {
@@ -131,45 +105,6 @@ export default function Admin() {
     if (confirm("Đặt lại tất cả nội dung về mặc định? Hành động này không thể hoàn tác.")) {
       resetToDefaults();
       toast.success("Đã đặt lại nội dung về mặc định!");
-    }
-  };
-
-  // CV management handlers
-  const handleCvUpload = async (file: File) => {
-    setCvUploading(true);
-    try {
-      // Note: For GitHub Pages (static site), file upload is not supported.
-      // The CV file must be placed in client/public/ folder manually
-      // or use an external URL (Google Drive, etc.)
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Keep the default CV path (file must exist in public/ folder)
-      const defaultCvPath = `/CV_Nguyen_Manh_Dat.pdf`;
-      updateContent({ cvPath: defaultCvPath });
-      setCurrentCvPath(defaultCvPath);
-      setCvExists(true);
-      
-      toast.info("Lưu ý: Trên GitHub Pages, hãy đặt file CV vào thư mục public/ hoặc dùng link Google Drive bên dưới.");
-    } catch (error) {
-      toast.error("Lỗi khi upload CV!");
-      throw error;
-    } finally {
-      setCvUploading(false);
-    }
-  };
-
-  const handleCvDelete = async () => {
-    if (confirm("Xóa CV hiện tại? Hành động này không thể hoàn tác.")) {
-      try {
-        // In a real app, you would delete from server
-        updateContent({ cvPath: undefined });
-        setCurrentCvPath("");
-        setCvExists(false);
-        toast.success("Đã xóa CV!");
-      } catch (error) {
-        toast.error("Lỗi khi xóa CV!");
-        throw error;
-      }
     }
   };
 
@@ -1492,30 +1427,28 @@ export default function Admin() {
               <div className="bg-background rounded-lg border border-border p-4 mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold">Trạng thái CV</h3>
-                  <div className={`px-3 py-1 rounded-full text-sm font-medium ${cvExists 
+                  <div className={`px-3 py-1 rounded-full text-sm font-medium ${content.cvUrl 
                     ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
-                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                    : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
                   }`}>
-                    {cvExists ? '✅ CV đã có' : '❌ Chưa có CV'}
+                    {content.cvUrl ? '✅ Google Drive đã kết nối' : '⚠️ Chưa có link Google Drive'}
                   </div>
                 </div>
                 
-                {cvExists ? (
+                {content.cvUrl ? (
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-muted-foreground" />
+                      <FileText className="h-4 w-4 text-green-500" />
                       <span className="text-sm">
-                        <strong>File:</strong> {currentCvPath.split('/').pop()}
+                        <strong>Nguồn:</strong> Google Drive
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground">
-                        <strong>Đường dẫn:</strong> {currentCvPath}
-                      </span>
+                    <div className="text-sm text-muted-foreground break-all">
+                      <strong>URL:</strong> {content.cvUrl}
                     </div>
                     <div className="flex gap-2 pt-2">
                       <Button 
-                        onClick={() => window.open(currentCvPath, '_blank')} 
+                        onClick={() => window.open(content.cvUrl, '_blank')} 
                         size="sm"
                         variant="outline"
                       >
@@ -1524,82 +1457,76 @@ export default function Admin() {
                       </Button>
                       <Button 
                         onClick={() => {
-                          const link = document.createElement('a');
-                          link.href = currentCvPath;
-                          link.download = currentCvPath.split('/').pop() || 'CV.pdf';
-                          link.click();
-                        }}
-                        size="sm"
-                        variant="outline"
-                      >
-                        <Download className="h-4 w-4 mr-2" />
-                        Tải xuống
-                      </Button>
-                      <Button 
-                        onClick={handleCvDelete} 
+                          updateContent({ cvUrl: undefined });
+                          toast.success("Đã xóa link Google Drive CV!");
+                        }} 
                         size="sm"
                         variant="outline"
                         className="text-red-500 hover:text-red-600"
                       >
                         <Trash2 className="h-4 w-4 mr-2" />
-                        Xóa
+                        Xóa link
                       </Button>
                     </div>
                   </div>
                 ) : (
                   <div className="text-center py-6">
                     <FileText className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
-                    <p className="text-muted-foreground">Chưa có CV nào được upload</p>
+                    <p className="text-muted-foreground">Chưa có link Google Drive cho CV</p>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Upload CV mới ở phần bên dưới
+                      Nhập link Google Drive ở phần bên dưới
                     </p>
                   </div>
                 )}
               </div>
 
-              {/* Upload Section */}
-              <div className="bg-background rounded-lg border border-border p-4">
-                <h3 className="text-lg font-semibold mb-4">Upload CV mới</h3>
+              {/* Google Drive URL Input */}
+              <div className="bg-background rounded-lg border border-border p-4 mb-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Upload className="h-5 w-5" />
+                  Cập nhật link Google Drive CV
+                </h3>
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Chọn file PDF
+                      Google Drive URL
                     </label>
                     <input
-                      type="file"
-                      accept=".pdf"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          if (file.type !== 'application/pdf') {
-                            toast.error('Chỉ chấp nhận file PDF!');
-                            e.target.value = '';
-                            return;
-                          }
-                          if (file.size > 5 * 1024 * 1024) {
-                            toast.error('File không được quá 5MB!');
-                            e.target.value = '';
-                            return;
-                          }
-                          // Show file info
-                          toast.success(`File đã chọn: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
-                          handleCvUpload(file);
-                        }
-                      }}
-                      className="block w-full text-sm text-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-accent file:text-accent-foreground hover:file:bg-accent/90 border border-border rounded-lg"
-                      disabled={cvUploading}
+                      type="url"
+                      value={content.cvUrl || ''}
+                      onChange={(e) => updateContent({ cvUrl: e.target.value })}
+                      placeholder="https://drive.google.com/file/d/FILE_ID/view?usp=sharing"
+                      className="w-full px-4 py-2 border border-border rounded-lg bg-background text-sm"
                     />
                     <p className="text-xs text-muted-foreground mt-1">
-                      Chỉ chấp nhận file PDF, tối đa 5MB
+                      Dán link chia sẻ từ Google Drive. Đảm bảo file có quyền "Anyone with the link can view".
                     </p>
                   </div>
 
-                  {cvUploading && (
-                    <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
-                      <RefreshCw className="h-4 w-4 animate-spin text-blue-600" />
-                      <span className="text-sm text-blue-800 dark:text-blue-200">
-                        Đang upload CV...
-                      </span>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Tên file CV (hiển thị)
+                    </label>
+                    <input
+                      type="text"
+                      value={content.cvPath || ''}
+                      onChange={(e) => updateContent({ cvPath: e.target.value })}
+                      placeholder="CV_Nguyen_Manh_Dat.pdf"
+                      className="w-full px-4 py-2 border border-border rounded-lg bg-background text-sm"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Tên file hiển thị khi người dùng tải CV (tùy chọn).
+                    </p>
+                  </div>
+
+                  {content.cvUrl && (
+                    <div className="p-3 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-800">
+                      <div className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-green-800 dark:text-green-200 font-medium">
+                          Link Google Drive đã được lưu. CV sẽ được tải từ Google Drive.
+                        </span>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -1608,15 +1535,21 @@ export default function Admin() {
               {/* Instructions */}
               <div className="bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800 p-4">
                 <h4 className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2">
-                  📋 Hướng dẫn sử dụng
+                  📋 Hướng dẫn upload CV lên Google Drive
                 </h4>
-                <ul className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
-                  <li>• CV sẽ được hiển thị trên trang "Giới thiệu" với nút "Tải CV"</li>
-                  <li>• File CV cũ sẽ được thay thế khi upload file mới</li>
-                  <li>• Đảm bảo file CV có tên phù hợp và nội dung cập nhật</li>
-                  <li>• CV sẽ được lưu trong thư mục public của website</li>
-                  <li>• Khuyến nghị: Tên file nên có định dạng CV_TenBan.pdf</li>
-                </ul>
+                <ol className="text-xs text-blue-700 dark:text-blue-300 space-y-2 list-decimal list-inside">
+                  <li>Truy cập <a href="https://drive.google.com" target="_blank" rel="noopener noreferrer" className="underline font-medium">Google Drive</a> và upload file CV (PDF)</li>
+                  <li>Nhấp chuột phải vào file → <strong>"Share"</strong> → <strong>"Anyone with the link"</strong> → <strong>"Viewer"</strong></li>
+                  <li>Nhấn <strong>"Copy link"</strong> để lấy link chia sẻ</li>
+                  <li>Dán link vào ô <strong>"Google Drive URL"</strong> ở trên</li>
+                  <li>Link sẽ được tự động lưu và đồng bộ qua Gist</li>
+                </ol>
+                <div className="mt-3 pt-3 border-t border-blue-200 dark:border-blue-700">
+                  <p className="text-xs text-blue-600 dark:text-blue-400">
+                    💡 <strong>Lưu ý:</strong> Trang web sẽ ưu tiên sử dụng link Google Drive. 
+                    Nếu không có link, sẽ dùng file local trong thư mục public/.
+                  </p>
+                </div>
               </div>
 
               {/* Debug Info (remove in production) */}
@@ -1624,10 +1557,8 @@ export default function Admin() {
                 <div className="bg-gray-50 dark:bg-gray-900/30 rounded border p-3">
                   <p className="text-xs font-medium mb-1">🐛 Debug Info (chỉ hiển thị trong development):</p>
                   <div className="text-xs text-muted-foreground space-y-1">
-                    <p>• Current CV Path: {currentCvPath}</p>
-                    <p>• CV Exists: {cvExists.toString()}</p>
-                    <p>• CV Uploading: {cvUploading.toString()}</p>
-                    <p>• Content CV Path: {content.cvPath || 'undefined'}</p>
+                    <p>• CV URL (Google Drive): {content.cvUrl || 'chưa có'}</p>
+                    <p>• CV Path (local): {content.cvPath || 'chưa có'}</p>
                   </div>
                 </div>
               )}

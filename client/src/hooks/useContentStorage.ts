@@ -19,6 +19,12 @@ export interface ContentData {
     introduction_vi?: string;
     introduction_en?: string;
 
+    // Job Title & Subtitle (bilingual)
+    jobTitle_vi?: string;
+    jobTitle_en?: string;
+    jobSubtitle_vi?: string;
+    jobSubtitle_en?: string;
+
     // Social Links
     socialLinks: {
         email: string;
@@ -29,7 +35,7 @@ export interface ContentData {
     };
 
     // Skills
-    skills: string[];
+    skills: (string | { name: string; name_en?: string; rating?: number })[];
     softwareSkills: { name: string; icon: string }[];
 
     // Experiences

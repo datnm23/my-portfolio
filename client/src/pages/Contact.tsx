@@ -129,32 +129,22 @@ export default function Contact() {
         {/* Navigation */}
         <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/50">
           <div className="container py-4 flex items-center justify-between">
-            <Link href="/">
-              <a className="text-xl font-bold text-foreground hover:text-accent transition-smooth">
-                Nguyễn Mạnh Đạt
-              </a>
+            <Link href="/" className="text-xl font-bold text-foreground hover:text-accent transition-smooth">
+              Nguyễn Mạnh Đạt
             </Link>
             <div className="flex items-center gap-6">
               <div className="hidden md:flex gap-6">
-                <Link href="/">
-                  <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
-                    {language === "vi" ? "Trang chủ" : "Home"}
-                  </a>
+                <Link href="/" className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
+                  {language === "vi" ? "Trang chủ" : "Home"}
                 </Link>
-                <Link href="/about">
-                  <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
-                    {content.about}
-                  </a>
+                <Link href="/about" className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
+                  {content.about}
                 </Link>
-                <Link href="/portfolio">
-                  <a className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
-                    {language === "vi" ? "Kinh nghiệm" : "Experiences"}
-                  </a>
+                <Link href="/portfolio" className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
+                  {language === "vi" ? "Kinh nghiệm" : "Experiences"}
                 </Link>
-                <Link href="/contact">
-                  <a className="text-sm font-medium text-accent hover:text-accent/80 transition-smooth">
-                    {content.contact}
-                  </a>
+                <Link href="/contact" className="text-sm font-medium text-accent hover:text-accent/80 transition-smooth">
+                  {content.contact}
                 </Link>
               </div>
               {switchable && toggleTheme && (
@@ -173,11 +163,9 @@ export default function Contact() {
 
         {/* Main Content */}
         <main className="flex-1 container py-12 md:py-20">
-          <Link href="/">
-            <a className="inline-flex items-center gap-2 text-accent hover:opacity-80 transition-smooth mb-8">
-              <ArrowLeft className="h-4 w-4" />
-              {content.back}
-            </a>
+          <Link href="/" className="inline-flex items-center gap-2 text-accent hover:opacity-80 transition-smooth mb-8">
+            <ArrowLeft className="h-4 w-4" />
+            {content.back}
           </Link>
 
           {/* Header */}
