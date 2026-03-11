@@ -4,16 +4,12 @@
     "ownerEmail": "datnm1594@gmail.com",
     "ownerPhone": "033 274 5275",
     "ownerLocation": "Yên Mỹ, Yên Mô, Ninh Bình",
-    "ownerLocation_en": "Yen My, Yen Mo, Ninh Binh, Vietnam",
+    "ownerLocation_en": "Yen My, Yen Mo, Ninh Binh",
     "avatarUrl": "https://placehold.co/200x200/E1E7EF/1F2937?text=Avatar",
-    "cvPath": "/CV_Nguyen_Manh_Dat.pdf",
+    "cvPath": "/CV_1768988487394.pdf",
     "cvUrl": "https://drive.google.com/file/d/1B_Zc13StfTMwM1eaXVlSI3vLZGYIZtW7/view?usp=sharing",
     "introduction_vi": "Tôi là kỹ sư dự toán với hơn 8 năm kinh nghiệm trong lĩnh vực xây dựng hạ tầng, dân dụng và công nghiệp. Chuyên môn của tôi bao gồm bóc tách khối lượng, lập hồ sơ dự thầu, lập hồ sơ mời thầu, thanh quyết toán công trình và quản lý dự án.\n\nTôi đã làm việc với các công ty xây dựng hàng đầu, tham gia các dự án quy mô lớn từ hạ tầng đến nhà cao tầng. Với kinh nghiệm này, tôi có thể xử lý các dự án phức tạp, đảm bảo tính chính xác và hiệu quả trong mọi khía cạnh công việc.",
     "introduction_en": "I am a cost engineer with over 8 years of experience in infrastructure, civil, and industrial construction. My expertise includes quantity surveying, prepare the Tender Proposal, Prepare Tender Documents, project settlement, and project management.\n\nI have worked with leading construction companies, participating in large-scale projects from infrastructure to high-rise buildings. With this experience, I can handle complex projects, ensuring accuracy and efficiency in all aspects of the work.",
-    "jobTitle_vi": "Kỹ sư Kinh tế xây dựng",
-    "jobTitle_en": "Senior Cost Engineer",
-    "jobSubtitle_vi": "Chuyên về dự toán, đấu thầu & quản lý chất lượng",
-    "jobSubtitle_en": "Expert in Estimation, Bidding & Quality Control",
     "socialLinks": {
         "email": "datnm1594@gmail.com",
         "phone": "033 274 5275",
@@ -90,12 +86,35 @@
     ],
     "experiences": [
         {
+            "id": 1768893358730,
+            "title": "Kỹ sư dự toán",
+            "company": "Công ty cổ phần Đầu tư và Công nghệ HVC",
+            "period": "05/2025- 01/2026",
+            "description": "Kỹ sư dự toán xây dựng, cơ điện",
+            "responsibilities": [
+                "Bóc tách khối lượng chi tiết từ bản vẽ kiến trúc và kết cấu, cơ điện.",
+                "Lập bảng tiên lượng khối lượng và dự toán chi phí cho hồ sơ dự thầu.",
+                "Tổng hợp báo giá từ các nhà thầu phụ và nhà cung cấp.",
+                "Lập bảng tiên lượng khối lượng và dự toán chi phí cho hồ sơ dự thầu."
+            ],
+            "visible": true,
+            "title_en": "Cost Estimator",
+            "company_en": "HVC Group",
+            "description_en": "Multi-disciplinary Quantity Surveyor",
+            "responsibilities_en": [
+                "Perform detailed measurements and take-offs from architectural , structural drawings, MEP.",
+                "Consolidate quotations from subcontractors and suppliers.",
+                "Conduct unit rate analysis for labor, materials, and equipment.",
+                "Prepare the Bill of Quantities (BOQ) and cost estimates for tender submissions."
+            ]
+        },
+        {
             "id": 1,
             "title": "Trưởng nhóm kế hoạch đấu thầu",
             "title_en": "Bid Planning Team Leader",
-            "company": "Công ty cố phần đầu tư AZ",
+            "company": "Công ty cố phần Đầu tư AZ",
             "company_en": "AZ Investment JSC",
-            "period": "11/2023 - 04/2025",
+            "period": "11/2023 - 12/2024",
             "description": "Quản lý đấu thầu, kế hoạch & tiến độ, chi phí dự án.",
             "description_en": "Manage bidding, planning & scheduling, project cost control.",
             "responsibilities": [
@@ -186,7 +205,7 @@
             "title_en": "21T2 Apartment Complex - Phenikaa Tower Project",
             "location": "Xã Hòa Lạc, Thành phố Hà Nội",
             "location_en": "Hoa Lac Commune, Hanoi City",
-            "year": "2024-2025",
+            "year": "2025",
             "description": "Lập Hồ sơ chào giá gói thầu \"Cung cấp, lắp đặt hệ thống Cơ điện\"",
             "description_en": "Prepare Quotation Documents for \"MEP System Supply and Installation\" Package",
             "role_vi": "Kỹ sư Dự toán",
@@ -216,7 +235,8 @@
                 1
             ],
             "categories": [
-                "dutoan"
+                "dutoan",
+                "dauthau"
             ]
         },
         {
@@ -256,7 +276,7 @@
             ],
             "categories": [
                 "qs",
-                "dutoan"
+                "dauthau"
             ]
         },
         {
@@ -305,7 +325,7 @@
             "title_en": "Nghia Lo Hotel",
             "location": "Yên Bái",
             "location_en": "Yen Bai Province",
-            "year": "2025",
+            "year": "2026",
             "description": "Bóc tách khối lượng chào thầu, lập hồ sơ dự toán, hồ sơ mời thầu gói thầu.",
             "description_en": "Quantity take-off for bidding, prepare cost estimates, tender documents for the package.",
             "role_vi": "Chủ trì dự toán",
@@ -329,7 +349,56 @@
             "highlights_en": [
                 "Demolition, Renovation, MEP, Cost Estimation, Verification"
             ],
-            "visible": false
+            "visible": true,
+            "documentIds": [
+                1768893726538
+            ],
+            "categories": [
+                "dutoan"
+            ]
+        },
+        {
+            "id": 1768978851173,
+            "title": "Nhà xưởng công nghiệp RBF",
+            "location": "Bắc Ninh",
+            "year": "2025",
+            "description": "Thiết kế, thi công nhà xưởng công nghiệp Công ty RBF",
+            "role_vi": "Chủ trì khối lượng, dự toán",
+            "role_en": "Lead Estimator",
+            "category": "dutoan",
+            "categories": [
+                "dutoan",
+                "dauthau"
+            ],
+            "responsibilities_vi": [
+                "Kiểm tra, đề xuất bổ sung bản vẽ thiết kế.",
+                "Bóc tách khối lượng công việc theo bản vẽ thiết kế",
+                "Lập hồ sơ chào thầu gói thầu Tổng thầu thiết kế, thi công"
+            ],
+            "responsibilities_en": [
+                "Review design drawings and propose necessary adjustments or supplements.",
+                "Perform detailed quantity take-offs based on design drawings.",
+                "Prepare tender documents for Design and Build (D&B) packages."
+            ],
+            "highlights_vi": [
+                "Thiết kế thi công",
+                "Hạ tầng",
+                "Nhà xưởng công nghiệp",
+                "Cơ điện"
+            ],
+            "highlights_en": [
+                "Design and Build (D&B)",
+                "Infrastructure",
+                "Industrial Factory",
+                "MEP"
+            ],
+            "visible": true,
+            "documentIds": [
+                1768979670877
+            ],
+            "title_en": "RBF Industrial Factory",
+            "location_en": "Bac Ninh Province",
+            "description_en": "RBF Company designs and constructs industrial factory buildings.\n"
         }
     ],
     "documents": [
@@ -377,6 +446,35 @@
             "content": "Bảng khối lượng cốt thép, bảng khối lượng vật liệu, tính toán thanh toán",
             "content_en": "Steel reinforcement quantity tables, material quantity tables, payment calculations",
             "googleDriveId": "1XPFwum3FlJ7D8KYYi5RU5i_h7LZa3ulw"
+        },
+        {
+            "id": 1768893726538,
+            "title": "Hồ sơ dự toán cơ điện Khách sạn Nghĩa Lộ",
+            "description": "Hồ sơ dự toán phần cấp điện dự án Khách sạn Nghĩa Lộ",
+            "fileName": "Dự toán ME KS Nghĩa Lộ.xlsx",
+            "fileSize": "100 KB",
+            "type": "Hồ sơ",
+            "category": "dutoan",
+            "content": "Bóc tách khối lượng xây dựng\nBóc tách khối lượng cơ điện\nDự toán xây dựng\nDự toán cơ điện",
+            "googleDriveId": "1FrLYjkDZw61RAVSW2Vm2fGdqxSEPHst6",
+            "description_en": "Electrical supply cost estimate for Nghia Lo Hotel project.\n",
+            "title_en": "Electrical power supply cost estimate",
+            "type_en": "Doccument",
+            "content_en": "Civil & Structural Quantity Take-off\nMEP Quantity Take-off\nConstruction Cost Estimate\nMEP Cost Estimate"
+        },
+        {
+            "id": 1768979670877,
+            "title": "Hồ sơ dự thầu dự án nhà xưởng RBF",
+            "description": "Hồ sơ dự thầu dự án nhà xưởng RBF",
+            "fileName": "BOQ RBF Yên Phong.xlsx",
+            "fileSize": "100 KB",
+            "type": "Hồ sơ",
+            "category": "dutoan",
+            "content": "Nội dung",
+            "googleDriveId": "1fw5xwMR7mHPFKUIpPB81UjgxsPTKRgVn",
+            "title_en": "RBF Factory Project Bid Documents",
+            "description_en": "RBF Factory Project Bid Documents",
+            "type_en": "Doccument"
         }
     ],
     "categories": [
@@ -391,8 +489,8 @@
             "id": "dutoan",
             "name_vi": "Dự toán",
             "name_en": "Bid Preparation",
-            "description_vi": "Lập hồ sơ dự thầu, tính toán giá trị",
-            "description_en": "Bid preparation, cost estimation"
+            "description_vi": "Lập hồ sơ dự toán, tính giá trị ngân sách công trình",
+            "description_en": "Prepare cost estimates and determine project budget values."
         },
         {
             "id": "qa/qc",
@@ -400,6 +498,13 @@
             "name_en": "QA/QC",
             "description_vi": "Lập hồ sơ nghiệm thu",
             "description_en": "Prepare acceptance documents"
+        },
+        {
+            "id": "dauthau",
+            "name_vi": "Đấu thầu",
+            "name_en": "Bidding",
+            "description_vi": "Lập hồ sơ dự thầu dự án",
+            "description_en": "Prepare project bid proposals."
         }
     ]
 }
