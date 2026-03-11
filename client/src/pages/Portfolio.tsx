@@ -1,10 +1,10 @@
 import { Link } from "wouter";
-import { ArrowLeft, ExternalLink, Download, Moon, Sun } from "lucide-react";
+import { ArrowLeft, ExternalLink, Download } from "lucide-react";
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useContent } from "@/contexts/ContentContext";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import Navigation from "@/components/Navigation";
 import PageLayout from "@/components/PageLayout";
 
 export default function Portfolio() {
@@ -57,36 +57,7 @@ export default function Portfolio() {
   return (
     <PageLayout>
       <div className="min-h-screen flex flex-col bg-background">
-        {/* Navigation */}
-        <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/50">
-          <div className="container py-4 flex items-center justify-between">
-            <Link href="/" className="text-xl font-bold text-foreground hover:text-accent transition-smooth">
-              Nguyễn Mạnh Đạt
-            </Link>
-            <div className="flex items-center gap-6">
-              <div className="hidden md:flex gap-6">
-                <Link href="/" className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
-                  {language === "vi" ? "Trang chủ" : "Home"}
-                </Link>
-                <Link href="/about" className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{t.about}</Link>
-                <Link href="/portfolio" className="text-sm font-medium text-accent hover:text-accent/80 transition-smooth">
-                  {language === "vi" ? "Kinh nghiệm" : "Experiences"}
-                </Link>
-                <Link href="/contact" className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{t.contact}</Link>
-              </div>
-              {switchable && toggleTheme && (
-                <button
-                  onClick={toggleTheme}
-                  className="p-2 rounded-full hover:bg-secondary transition-smooth"
-                  aria-label="Toggle theme"
-                >
-                  {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
-                </button>
-              )}
-              <LanguageSwitcher />
-            </div>
-          </div>
-        </nav>
+        <Navigation activePage="portfolio" />
 
         {/* Hero Section */}
         <section className="py-16 md:py-24 bg-gradient-to-br from-accent/5 to-background">
@@ -106,7 +77,7 @@ export default function Portfolio() {
         </section>
 
         {/* Category Tabs */}
-        <section className="py-8 bg-background/80 backdrop-blur-sm sticky top-16 z-40 border-b border-border">
+        <section className="py-8 bg-background/80 backdrop-blur-sm sticky top-[65px] z-40 border-b border-border">
           <div className="container">
             <div className="flex flex-wrap gap-4">
               {(siteContent.categories || []).map((category: typeof siteContent.categories[0]) => (

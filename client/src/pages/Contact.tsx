@@ -1,12 +1,12 @@
 import { Link } from "wouter";
-import { ArrowLeft, Mail, Phone, MapPin, Loader2, Moon, Sun } from "lucide-react";
+import { ArrowLeft, Mail, Phone, MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { OWNER_NAME, OWNER_EMAIL, OWNER_PHONE, OWNER_LOCATION, FORMSPREE_ID } from "@/const";
 import { trackEvent } from "@/hooks/useGoogleAnalytics";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import Navigation from "@/components/Navigation";
 import PageLayout from "@/components/PageLayout";
 import { toast } from "sonner";
 
@@ -31,6 +31,8 @@ export default function Contact() {
       description: "Bạn có câu hỏi hoặc muốn thảo luận về dự án? Hãy gửi tin nhắn cho tôi, tôi sẽ phản hồi trong vòng 24 giờ.",
       name: "Tên của bạn",
       email: "Email",
+      phone: "Điện thoại",
+      address: "Địa chỉ",
       subject: "Chủ đề",
       message: "Tin nhắn",
       send: "Gửi tin nhắn",
@@ -50,6 +52,8 @@ export default function Contact() {
       description: "Do you have questions or want to discuss a project? Send me a message, I'll respond within 24 hours.",
       name: "Your Name",
       email: "Email",
+      phone: "Phone",
+      address: "Address",
       subject: "Subject",
       message: "Message",
       send: "Send Message",
@@ -126,40 +130,7 @@ export default function Contact() {
   return (
     <PageLayout>
       <div className="min-h-screen flex flex-col">
-        {/* Navigation */}
-        <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/50">
-          <div className="container py-4 flex items-center justify-between">
-            <Link href="/" className="text-xl font-bold text-foreground hover:text-accent transition-smooth">
-              Nguyễn Mạnh Đạt
-            </Link>
-            <div className="flex items-center gap-6">
-              <div className="hidden md:flex gap-6">
-                <Link href="/" className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
-                  {language === "vi" ? "Trang chủ" : "Home"}
-                </Link>
-                <Link href="/about" className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
-                  {content.about}
-                </Link>
-                <Link href="/portfolio" className="text-sm font-medium text-foreground hover:text-accent transition-smooth">
-                  {language === "vi" ? "Kinh nghiệm" : "Experiences"}
-                </Link>
-                <Link href="/contact" className="text-sm font-medium text-accent hover:text-accent/80 transition-smooth">
-                  {content.contact}
-                </Link>
-              </div>
-              {switchable && toggleTheme && (
-                <button
-                  onClick={toggleTheme}
-                  className="p-2 rounded-full hover:bg-secondary transition-smooth"
-                  aria-label="Toggle theme"
-                >
-                  {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
-                </button>
-              )}
-              <LanguageSwitcher />
-            </div>
-          </div>
-        </nav>
+        <Navigation activePage="contact" />
 
         {/* Main Content */}
         <main className="flex-1 container py-12 md:py-20">
@@ -276,7 +247,7 @@ export default function Contact() {
                   <div className="flex gap-4">
                     <Phone className="h-6 w-6 text-accent flex-shrink-0 mt-1" />
                     <div>
-                      <p className="text-sm text-muted-foreground mb-1">{content.email}</p>
+                      <p className="text-sm text-muted-foreground mb-1">{content.phone}</p>
                       <a href={`tel:${OWNER_PHONE}`} className="text-accent hover:opacity-80 transition-smooth">
                         {OWNER_PHONE}
                       </a>
@@ -286,7 +257,7 @@ export default function Contact() {
                   <div className="flex gap-4">
                     <MapPin className="h-6 w-6 text-accent flex-shrink-0 mt-1" />
                     <div>
-                      <p className="text-sm text-muted-foreground mb-1">{content.email}</p>
+                      <p className="text-sm text-muted-foreground mb-1">{content.address}</p>
                       <p className="text-foreground">{OWNER_LOCATION}</p>
                     </div>
                   </div>

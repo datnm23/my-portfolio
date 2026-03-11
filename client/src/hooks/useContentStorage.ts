@@ -1,7 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { getGistConfig, fetchGistContent, updateGistContent } from '@/lib/gistApi';
+import { getGistConfig, fetchGistContent, fetchPublicGistContent, updateGistContent } from '@/lib/gistApi';
 
 const STORAGE_KEY = 'portfolio_content';
+const CACHE_TIMESTAMP_KEY = 'portfolio_content_ts';
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes cache TTL
+
+// Public Gist ID for read-only access (no auth needed)
+const PUBLIC_GIST_ID = import.meta.env.VITE_GIST_ID || '';
 
 export interface ContentData {
     // Personal Info
@@ -104,6 +109,16 @@ export interface ContentData {
 
 export type SyncStatus = 'idle' | 'syncing' | 'synced' | 'error' | 'offline';
 
+function isCacheStale(): boolean {
+    const ts = localStorage.getItem(CACHE_TIMESTAMP_KEY);
+    if (!ts) return true;
+    return Date.now() - Number(ts) > CACHE_TTL_MS;
+}
+
+function updateCacheTimestamp(): void {
+    localStorage.setItem(CACHE_TIMESTAMP_KEY, String(Date.now()));
+}
+
 export function useContentStorage(defaultContent: ContentData) {
     const [content, setContent] = useState<ContentData>(() => {
         // Load from localStorage on init
@@ -125,30 +140,51 @@ export function useContentStorage(defaultContent: ContentData) {
     const isInitialMount = useRef(true);
     const syncTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    // Load from Gist on initial mount
+    // Load content on mount: try public Gist first, then admin config
     useEffect(() => {
-        const loadFromGist = async () => {
-            const config = getGistConfig();
-            if (!config) {
-                setSyncStatus('offline');
+        const loadContent = async () => {
+            // Skip if cache is still fresh
+            if (!isCacheStale()) {
+                setSyncStatus('synced');
                 return;
             }
 
             setSyncStatus('syncing');
-            const gistContent = await fetchGistContent<ContentData>(config);
 
-            if (gistContent && Object.keys(gistContent).length > 0) {
-                setContent(prev => ({ ...defaultContent, ...gistContent }));
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(gistContent));
-                setSyncStatus('synced');
-                setLastSynced(new Date());
-            } else {
-                setSyncStatus('offline');
+            // Strategy 1: Try admin config (authenticated, for admin users)
+            const adminConfig = getGistConfig();
+            if (adminConfig) {
+                const gistContent = await fetchGistContent<ContentData>(adminConfig);
+                if (gistContent && Object.keys(gistContent).length > 0) {
+                    setContent(prev => ({ ...defaultContent, ...gistContent }));
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(gistContent));
+                    updateCacheTimestamp();
+                    setSyncStatus('synced');
+                    setLastSynced(new Date());
+                    return;
+                }
             }
+
+            // Strategy 2: Try public Gist (no auth, for all visitors)
+            if (PUBLIC_GIST_ID) {
+                const publicContent = await fetchPublicGistContent<ContentData>(PUBLIC_GIST_ID);
+                if (publicContent && Object.keys(publicContent).length > 0) {
+                    setContent(prev => ({ ...defaultContent, ...publicContent }));
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(publicContent));
+                    updateCacheTimestamp();
+                    setSyncStatus('synced');
+                    setLastSynced(new Date());
+                    return;
+                }
+            }
+
+            // Fallback: use localStorage cache or defaults
+            setSyncStatus(adminConfig ? 'error' : 'offline');
         };
 
-        loadFromGist();
+        loadContent();
     }, [defaultContent]);
+
 
     // Save to localStorage and sync to Gist on change (debounced)
     useEffect(() => {

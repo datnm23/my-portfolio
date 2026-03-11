@@ -68,8 +68,39 @@ export async function fetchGistContent<T>(config: GistConfig): Promise<T | null>
     }
 }
 
+// Fetch content from a PUBLIC Gist (no auth needed)
+// This allows all visitors to get the latest content without admin config
+export async function fetchPublicGistContent<T>(gistId: string): Promise<T | null> {
+    try {
+        const response = await fetch(`${GIST_API_URL}/${gistId}`, {
+            headers: {
+                'Accept': 'application/vnd.github.v3+json',
+            },
+        });
+
+        if (!response.ok) {
+            console.warn('Failed to fetch public Gist:', response.status, response.statusText);
+            return null;
+        }
+
+        const gist: GistResponse = await response.json();
+        const contentFile = gist.files['content.json'];
+
+        if (!contentFile) {
+            console.warn('content.json not found in public Gist');
+            return null;
+        }
+
+        return JSON.parse(contentFile.content) as T;
+    } catch (error) {
+        console.warn('Error fetching public Gist:', error);
+        return null;
+    }
+}
+
 // Update content in Gist
 export async function updateGistContent<T>(config: GistConfig, content: T): Promise<boolean> {
+
     try {
         const response = await fetch(`${GIST_API_URL}/${config.gistId}`, {
             method: 'PATCH',

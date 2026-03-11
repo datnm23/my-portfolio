@@ -1,10 +1,10 @@
-import { Mail, Phone, MapPin, ArrowRight, Linkedin, Github, Facebook, Moon, Sun } from "lucide-react";
+import { Mail, Phone, MapPin, ArrowRight, Linkedin, Github, Facebook } from "lucide-react";
 import { Link } from "wouter";
 import { SOCIAL_LINKS, AVATAR_URL } from "@/const";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useContent } from "@/contexts/ContentContext";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import Navigation from "@/components/Navigation";
 import PageLayout from "@/components/PageLayout";
 
 export default function Home() {
@@ -48,34 +48,10 @@ export default function Home() {
   return (
     <PageLayout>
       <div className="min-h-screen flex flex-col bg-background">
-        {/* Navigation */}
-        <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/50">
-          <div className="container py-4 flex items-center justify-between">
-            <Link href="/" className="text-xl font-bold text-foreground hover:text-accent transition-smooth">
-              {language === 'en' ? (siteContent.ownerName_en || siteContent.ownerName) : siteContent.ownerName}
-            </Link>
-            <div className="flex items-center gap-6">
-              <div className="hidden md:flex gap-6">
-                <Link href="/" className="text-sm font-medium text-accent hover:text-accent/80 transition-smooth">{t.home}</Link>
-                <Link href="/about" className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{t.about}</Link>
-                <Link href="/portfolio" className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{t.experiences}</Link>
-                <Link href="/contact" className="text-sm font-medium text-foreground hover:text-accent transition-smooth">{t.contact}</Link>
-              </div>
-              {switchable && toggleTheme && (
-                <button
-                  onClick={toggleTheme}
-                  className="p-2 rounded-full hover:bg-secondary transition-smooth"
-                  aria-label="Toggle theme"
-                >
-                  {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
-                </button>
-              )}
-              <LanguageSwitcher />
-            </div>
-          </div>
-        </nav>
+        <Navigation activePage="home" />
 
         {/* Hero Section - Split Layout */}
+
         <section className="flex-1 py-12 md:py-20">
           <div className="container">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
