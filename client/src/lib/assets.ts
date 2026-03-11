@@ -63,7 +63,6 @@ export function downloadFile(fileName: string, googleDriveId?: string): void {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      console.log(`Google Drive download: ${fileName} (ID: ${googleDriveId})`);
     } else {
       // Fallback: local file (only if no Google Drive ID)
       const url = getAssetUrl(fileName);
@@ -74,7 +73,6 @@ export function downloadFile(fileName: string, googleDriveId?: string): void {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      console.log(`Local download: ${fileName} from ${url}`);
     }
   } catch (error) {
     console.error("Error downloading file:", error);
