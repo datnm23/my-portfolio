@@ -21,7 +21,7 @@ export default function About() {
       back: "Quay lại",
       downloadCV: "Tải CV",
       title: "Kỹ sư Dự toán",
-      subtitle: "Chuyên gia Bóc tách khối lượng & Thanh quyết toán",
+      subtitle: "Chuyên gia Đấu thầu, Dự toán & Thanh quyết toán",
       introduction: "Giới thiệu",
       skills: "Kỹ năng chuyên môn",
       software: "Phần mềm & Công cụ",
